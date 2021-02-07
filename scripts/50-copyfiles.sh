@@ -4,4 +4,4 @@ if [ ! /usr/bin/rsync ]; then
     exit 255;
 fi
 
-rsync -avCP "$1/src/" "$HOME"
+rsync -avCP "$1/overlay/" "$HOME"

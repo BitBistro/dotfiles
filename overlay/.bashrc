@@ -6,8 +6,18 @@
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
-      *) [ -z "$PS1" ] && return;;
+      *) return;;
 esac
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -15,7 +25,6 @@ shopt -s histappend
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=10000
 HISTFILESIZE=10000
-HISTTIMEFORMAT="%F %T "
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -49,8 +58,6 @@ if ! shopt -oq posix; then
 fi
 
 # make less more friendly for non-text input files, see lesspipe(1) and less(1)
-
-export LESS="FRiX"
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set a fancy prompt (non-color, unless we know we "want" color)
@@ -137,12 +144,12 @@ esac
 unset color_prompt force_color_prompt SKIP_GIT_PROMPT
 
 if [ -z $SKIP_SSH_AGENT ]; then
+    export GPG_TTY=$(tty)
     if test -x /bin/systemctl && /bin/systemctl --quiet --user is-active gpg-agent-ssh.socket; then
         if [ -z "${SSH_AUTH_SOCK}" ]; then
             unset SSH_AGENT_PID
             export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
         fi
-        export GPG_TTY=$(tty)
         gpg-connect-agent UPDATESTARTUPTTY /bye >/dev/null
     fi
 fi

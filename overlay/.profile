@@ -9,27 +9,19 @@
 #umask 022
 
 # if running bash
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
-    fi
-fi
-
+export PATH="/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin"
 if [ "`id -u`" -eq 0 ]; then
+    export PS1='# '
     mesg n || true
 else
     export TZ="America/New_York"
-
-    # set PATH so it includes user's private bin if it exists
-    if [ -d "$HOME/bin" ] ; then
-        PATH="$HOME/bin:$PATH"
-    fi
-
-    # set PATH so it includes user's private bin if it exists
-    if [ -d "$HOME/.local/bin" ] ; then
-        PATH="$HOME/.local/bin:$PATH"
-    fi
+    export PATH="$PATH:/usr/local/games:/usr/games"
+    export PS1='$ '
 fi
 
-
+# If running bash then run the bash rc which will exit fast if not interactive
+if [ "$BASH_VERSION" ] && [ "$BASH" != "/bin/sh" ]; then
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
