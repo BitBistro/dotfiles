@@ -17,7 +17,7 @@ END_OF_USAGE
 }
 
 run-now() {
-    SCRIPTS=$(command find $BASEDIR/scripts -maxdepth 1 -regex '^.*\/[0-9][0-9][a-zA-Z-]+\.sh$' -type f -print | command sort )
+    SCRIPTS=$(command find $BASEDIR/scripts -maxdepth 1 -regex '^.*\/[0-9][0-9][a-zA-Z-]+\.sh$' -type f -print | command sort)
     for SCRIPT in $SCRIPTS; do
         echo "Running: $SCRIPT"
         /bin/bash $SCRIPT "$BASEDIR"
