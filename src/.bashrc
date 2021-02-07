@@ -26,14 +26,6 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-    xterm*|rxvt*)
-        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-        ;;
-    *)
-        ;;
-esac
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -132,6 +124,16 @@ else
         PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
     fi
 fi
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+    *)
+        ;;
+esac
+
 unset color_prompt force_color_prompt SKIP_GIT_PROMPT
 
 if [ -z $SKIP_SSH_AGENT ]; then
