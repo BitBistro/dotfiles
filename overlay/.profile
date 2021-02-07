@@ -8,8 +8,12 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+export ENV="$HOME/.env"
+if [ -r "$ENV" ]; then
+    . "$ENV"
+fi
+
 # if running bash
-export PATH="/sbin:/usr/sbin:/usr/local/sbin:/bin:/usr/bin:/usr/local/bin"
 if [ "`id -u`" -eq 0 ]; then
     export PS1='# '
     mesg n || true
