@@ -135,12 +135,12 @@ fi
 unset color_prompt force_color_prompt SKIP_GIT_PROMPT
 
 if [ -z $SKIP_SSH_AGENT ]; then
-    export GPG_TTY=$(tty)
-    echo UPDATESTARTUPTTY | gpg-connect-agent &> /dev/null
-    if [ -z $SSH_AUTH_SOCK ]; then
-        if test -x /bin/systemctl && /bin/systemctl --quiet --user is-active gpg-agent-ssh.socket; then
-            export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+    if test -x /bin/systemctl && /bin/systemctl --quiet --user is-active gpg-agent-ssh.socket; then
+        if [ -z "${SSH_AUTH_SOCK}" ]; then
+            unset SSH_AGENT_PID
+            export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
         fi
+        export GPG_TTY=$(tty)
+        gpg-connect-agent UPDATESTARTUPTTY /bye >/dev/null
     fi
 fi
-
