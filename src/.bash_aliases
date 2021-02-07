@@ -2,7 +2,6 @@
 # http://www.in-ulm.de/~mascheck/various/alternate_charset/
 alias sout='printf "\033[m\033(B\033)0\016\033[?5l\0337\033[r\0338"'
 alias sin='printf "\033[m\033(B\033)0\017\033[?5l\0337\033[r\0338"'
-alias stitle='PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"'
 
 # Top 10 memory hogs
 alias hogs='ps -eorss,args | sort -nr | pr -TW$COLUMNS | head'
