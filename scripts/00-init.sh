@@ -1,2 +1,2 @@
 #!/bin/bash
-mkdir --mode=700 -vp ~/.ssh ~/.gnupg
+mkdir --mode=700 -p ~/.ssh ~/.gnupg
