@@ -15,4 +15,5 @@ if [ ! -z "$RELOAD_AGENT" ]; then
     gpg-connect-agent <<< RELOADAGENT &>/dev/null
 fi
 
-systemctl --user mask ssh-agent.service
+systemctl --user mask --now ssh-agent.service
+systemctl --user enable --now gpg-agent.socket
