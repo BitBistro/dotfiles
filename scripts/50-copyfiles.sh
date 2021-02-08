@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! /usr/bin/rsync ]; then
+if [ ! -e /usr/bin/rsync ]; then
     echo "rsync not installed"
     exit 255;
 fi
