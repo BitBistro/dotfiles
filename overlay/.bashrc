@@ -2,6 +2,8 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# Always make sure this is executed if available
+if [ -n "$BASH_ENV" ]; then . "$BASH_ENV"; fi
 
 # If not running interactively, don't do anything
 case $- in
@@ -9,22 +11,13 @@ case $- in
       *) return;;
 esac
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=10000
-HISTFILESIZE=10000
+export TZ="America/New_York"
+export HISTSIZE=10000
+export HISTFILESIZE=10000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -35,14 +28,13 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f "${HOME}/.bash_aliases" ]; then
+    . "${HOME}/.bash_aliases"
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -123,7 +115,7 @@ if [ "$color_prompt" = yes ]; then
     fi
 
     # Sets up a super fancy color prompt that includes the git variables. If git prompts are set the prompt will still be fine.
-    export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[\${git_branch_color}\]\${git_branch}\[\e[0;31m\]\${git_dirty}\[\033[00m\]\${git_space}\\$ "
+    PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[\${git_branch_color}\]\${git_branch}\[\e[0;31m\]\${git_dirty}\[\033[00m\]\${git_space}\\$ "
 else
     # set a fancy prompt (non-color, overwrite the one in /etc/profile)
     # but only if not SUDOing and have SUDO_PS1 set; then assume smart user.
@@ -142,14 +134,21 @@ case "$TERM" in
 esac
 
 unset color_prompt force_color_prompt SKIP_GIT_PROMPT
+export PS1
 
 if [ -z $SKIP_SSH_AGENT ]; then
     export GPG_TTY=$(tty)
-    if test -x /bin/systemctl && /bin/systemctl --quiet --user is-active gpg-agent-ssh.socket; then
-        if [ -z "${SSH_AUTH_SOCK}" ]; then
-            unset SSH_AGENT_PID
-            export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+    if [ -z "${SSH_AUTH_SOCK}" ]; then
+        if test -x /bin/systemctl && /bin/systemctl --quiet --user is-active gpg-agent-ssh.socket; then
+            if [ -z "${SSH_AUTH_SOCK}" ]; then
+                unset SSH_AGENT_PID
+                export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+            fi
+            if [ -x /usr/bin/gpg-connect-agent ]; then
+                gpg-connect-agent UPDATESTARTUPTTY /bye &>/dev/null
+            fi
+        else
+            eval `test -x /usr/bin/ssh-agent && /usr/bin/ssh-agent -s`
         fi
-        gpg-connect-agent UPDATESTARTUPTTY /bye >/dev/null
     fi
 fi
