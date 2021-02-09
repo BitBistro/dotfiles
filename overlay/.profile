@@ -8,24 +8,21 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-export ENV="$HOME/.env"
-if [ -r "$ENV" ]; then
-    . "$ENV"
-fi
-
-# if running bash
-if [ "`id -u`" -eq 0 ]; then
-    export PS1='# '
-    mesg n || true
-else
-    export TZ="America/New_York"
-    export PATH="$PATH:/usr/local/games:/usr/games"
-    export PS1='$ '
+# ENV always runs. If bash is a login shell, it will call .bashrc which pulls
+# in ENV. Non-interactive bash will source ENV. Dash and other stuff will call
+# ENV always. EVERYBODY ENV
+if [ -r "${HOME}/.env" ]; then
+    export ENV="${HOME}/.env"
+    export BASH_ENV="${ENV}"
 fi
 
 # If running bash then run the bash rc which will exit fast if not interactive
 if [ "$BASH_VERSION" ] && [ "$BASH" != "/bin/sh" ]; then
     if [ -f "$HOME/.bashrc" ]; then
-        . "$HOME/.bashrc"
+        . "$HOME/.bashrc" || true
+    fi
+else
+    if [ -r "$ENV" ]; then
+        . "$ENV" || true
     fi
 fi
