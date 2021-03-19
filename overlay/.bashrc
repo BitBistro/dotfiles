@@ -147,6 +147,7 @@ if [ -z $SKIP_SSH_AGENT ]; then
             if [ -x /usr/bin/gpg-connect-agent ]; then
                 gpg-connect-agent UPDATESTARTUPTTY /bye &>/dev/null
             fi
+            export GPG_AGENT_INFO=true
         else
             eval `test -x /usr/bin/ssh-agent && /usr/bin/ssh-agent -s`
         fi
