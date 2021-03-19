@@ -1,13 +1,25 @@
 #!/bin/bash
-
 RELOAD_AGENT=
+
+if ! grep -q use-agent "$HOME/.gnupg/gpg.conf" 2>/dev/null; then
+    echo use-agent >> "$HOME/.gnupg/gpg.conf"
+    RELOAD_AGENT=true
+fi
+
 if ! grep -q enable-ssh-support "$HOME/.gnupg/gpg-agent.conf" 2>/dev/null; then
     echo enable-ssh-support >> "$HOME/.gnupg/gpg-agent.conf"
     RELOAD_AGENT=true
 fi
 
-if ! grep -q default-cache-ttl "$HOME/.gnupg/gpg-agent.conf" 2>/dev/null; then
-    echo "default-cache-ttl 3600" >> "$HOME/.gnupg/gpg-agent.conf"
+for i in default-cache-ttl max-cache-ttl default-cache-ttl-ssh max-cache-ttl-ssh; do
+    if ! grep -q "^$i" "$HOME/.gnupg/gpg-agent.conf" 2>/dev/null; then
+        echo "$i 21600" >> "$HOME/.gnupg/gpg-agent.conf"
+        RELOAD_AGENT=true
+    fi
+done
+
+if ! grep -q pinentry-timeout "$HOME/.gnupg/gpg-agent.conf" 2>/dev/null; then
+    echo "pinentry-timeout 60" >> "$HOME/.gnupg/gpg-agent.conf"
     RELOAD_AGENT=true
 fi
 
