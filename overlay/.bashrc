@@ -139,7 +139,7 @@ export PS1
 if [ -z $SKIP_SSH_AGENT ]; then
     export GPG_TTY=$(tty)
     if [ -z "${SSH_AUTH_SOCK}" ]; then
-        if test -x /bin/systemctl && /bin/systemctl --quiet --user is-active gpg-agent-ssh.socket; then
+        if test -x /bin/systemctl && /bin/systemctl --quiet --user is-active gpg-agent-ssh.socket 2>/dev/null; then
             if [ -z "${SSH_AUTH_SOCK}" ]; then
                 unset SSH_AGENT_PID
                 export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
@@ -149,7 +149,7 @@ if [ -z $SKIP_SSH_AGENT ]; then
             fi
             export GPG_AGENT_INFO=true
         else
-            eval `test -x /usr/bin/ssh-agent && /usr/bin/ssh-agent -s`
+            eval `test -x /usr/bin/ssh-agent && /usr/bin/ssh-agent -t 21600 -s` &> /dev/null
         fi
     fi
 fi
