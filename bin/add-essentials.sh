@@ -37,7 +37,7 @@ case $LEVEL in
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent \
                 pinentry-curses_ '?and(~n^plymouth_,?not(~v))'
-        aptitude markauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
+        aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent
     ;;
     *)
