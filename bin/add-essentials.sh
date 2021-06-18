@@ -35,10 +35,10 @@ case $LEVEL in
     ;;
     "standard")
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
-                bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent \
+                bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent patch zip unzip jq mlocate \
                 pinentry-curses_ '?and(~n^plymouth_,?not(~v))'
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
-                bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent
+                bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent patch zip unzip jq mlocate 
     ;;
     *)
         echo "Not implemented" >&2
