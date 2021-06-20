@@ -24,21 +24,31 @@ trap '/bin/rm -f -- "$TEMPFILE"' EXIT
 apt-config dump | egrep 'APT::Install' | sed -re 's/1/0/g' > $TEMPFILE
 export APT_CONFIG="$TEMPFILE"
 
-#apt update
-#apt upgrade
+apt update
 
 case $LEVEL in
     "base")
+        apt upgrade
         apt -y install aptitude aptitude-doc-en
         aptitude -y install "?and(?architecture(native),?or(~prequired))" bash-completion vim-nox git rsync pinentry-tty\
                 pinentry-curses_ gpg-agent
     ;;
     "standard")
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
-                bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent patch zip unzip jq mlocate \
-                pinentry-curses_ '?and(~n^plymouth_,?not(~v))'
+                bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent patch zip unzip jq \
+                mlocate pinentry-curses_ '?and(~n^plymouth_,?not(~v))'
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
-                bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent patch zip unzip jq mlocate 
+                bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent patch zip unzip jq \
+                mlocate
+    ;;
+    "extra")
+        aptitude install \
+            apt-file arch-test autoconf automake autotools-dev build-essential debhelper debian-keyring debootstrap \
+            devscripts dh-make dkms dosfstools dpkg-dev dput dupload e2fsprogs-l10n eatmydata equivs fakeroot fancontrol \
+            gdisk git gnupg hdparm htop i2c-tools irqbalance jq lintian linux-headers-$(uname -r) linux-headers-amd64 \
+            lm-sensors localepurge manpages-dev mlocate mutt net-tools nocache nvme-cli parted patch patchutils pbuilder pigz \
+            powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools w3m xutils-dev zfs-dkms \
+            zfs-initramfs shared-mime-info xauth xdg-user-dirs
     ;;
     *)
         echo "Not implemented" >&2
