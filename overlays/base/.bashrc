@@ -83,6 +83,10 @@ else
     addCDPATH "${HOME}/...:"
 fi
 
+# and go ...
+export GOPATH="$HOME/C/go"
+test -d "$GOPATH" || mkdir -p "$GOPATH"
+
 export PAGER MANPAGER LESS EDITOR
 export PS1 PATH
 
