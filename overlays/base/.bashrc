@@ -33,6 +33,12 @@ if command -v nvim &> /dev/null; then
     EDITOR=nvim
     alias vim="nvim"
 fi
+if ! command -v kubectl &> /dev/null && command -v minikube &> /dev/null; then
+    alias kubectl="minikube kubectl --"
+fi
+if command -v kubectl &>/dev/null; then
+    alias k="kubectl"
+fi
 PS1='$ '
 
 addPATH () {
