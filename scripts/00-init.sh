@@ -1,2 +1,2 @@
-#!/bin/bash
-mkdir --mode=700 -p ~/.ssh ~/.gnupg
+mkdir -m 700 -p ~/.ssh ~/.gnupg ~/.cache/nvim/tmp ~/..
+touch ~/.env-local

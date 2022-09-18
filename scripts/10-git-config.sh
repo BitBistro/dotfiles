@@ -1,4 +1,3 @@
-#!/bin/bash
 if [ ! /usr/bin/git ]; then
     echo "Git not installed... bailing"
     exit 255;

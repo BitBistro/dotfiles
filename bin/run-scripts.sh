@@ -1,6 +1,11 @@
 #!/bin/bash
+OSENV="linux"
+if [ "$(uname -s | tr A-Z a-z)" == "darwin" ]; then
+    OSENV="darwin"
+fi
 
-BASEDIR="$(readlink -f `dirname  $0`/..)";
+READLINK=$(command -v greadlink readlink | head -n1)
+BASEDIR="$($READLINK -f `dirname  $0`/..)";
 
 usage() {
     cat <<END_OF_USAGE >&2
@@ -17,10 +22,16 @@ END_OF_USAGE
 }
 
 run-now() {
-    SCRIPTS=$(command find $BASEDIR/scripts -maxdepth 1 -regex '^.*\/[0-9][0-9][a-zA-Z-]+\.sh$' -type f -print | command sort)
+    REPOST=('-regextype' 'egrep')
+    REPRE=""
+    if [ "$OSENV" == "darwin" ]; then
+        REPRE='-E'
+	REPOST=""
+    fi
+    SCRIPTS=$(command find $REPRE "${BASEDIR}/scripts" ${REGEXTYPE[*]} -maxdepth 1 -regex '^.*\/[0-9][0-9][a-zA-Z-]+\.sh$' -type f -print | command sort)
     for SCRIPT in $SCRIPTS; do
         echo "Running: $SCRIPT"
-        /bin/bash $SCRIPT "$BASEDIR"
+        /bin/bash "${SCRIPT}" "${BASEDIR}" "${OSENV}"
         if [ $? -eq 255 ]; then
             echo "Error 255 encountered in script '$SCRIPT'"
             exit 255
@@ -37,7 +48,7 @@ case "$1" in
         ;;
     *)
         yn=n
-        read -N1 -p "Process with setup [y/N]? " yn; echo
+        read -p "Process with setup [y/N]? " yn; echo
         if [ "$yn" == "y" ]; then
             run-now
         else
