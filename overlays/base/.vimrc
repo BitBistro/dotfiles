@@ -105,8 +105,9 @@ nnoremap <Tab> :noh<CR>
 " If you like :set guifont=*, you could always map a key to allow you to quickly choose a font. For example:
 " map <F3> <Esc>:set guifont=*<CR>
 
-" Don't use Ex mode, use Q for formatting
-map Q gq
+" Map <C-S-F> to format all
+map <ESC>[1;bf <C-S-F>
+map <C-S-F> gg=G``
 
 if has("gui_running") || &term =~ "xterm"
     " Map control left right, to skip by word gui and terminal input
@@ -257,4 +258,4 @@ filetype indent on
 au BufRead,BufNewFile *.xml set filetype=xhtml
 " Turn off auto-commenting and some auto-wrapping
 autocmd FileType * setlocal formatoptions-=t formatoptions-=c formatoptions-=r formatoptions-=o
-autocmd BufNewFile,BufRead *.go set noexpandtab filetype=go shiftwidth=8 tabstop=8 softtabstop=8
+autocmd BufNewFile,BufRead *.go set noexpandtab filetype=go sw=5 shiftwidth=5 tabstop=5 softtabstop=5
