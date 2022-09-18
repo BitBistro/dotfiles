@@ -25,6 +25,7 @@ apt-config dump | egrep 'APT::Install' | sed -re 's/1/0/g' > $TEMPFILE
 export APT_CONFIG="$TEMPFILE"
 
 apt update
+apt autoremove
 
 case $LEVEL in
     "base")

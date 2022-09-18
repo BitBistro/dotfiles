@@ -80,7 +80,7 @@ else
     addPATH "${HOME}/bin"
     addPATH "${HOME}/.../bin"
     addPATH "${HOME}/.local/bin"
-    addCDPATH "${HOME}/...:./..."
+    addCDPATH "${HOME}/...:"
 fi
 
 export PAGER MANPAGER LESS EDITOR
