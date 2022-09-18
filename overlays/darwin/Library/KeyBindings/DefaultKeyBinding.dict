@@ -1,0 +1,70 @@
+/* ~/Library/KeyBindings/DefaultKeyBinding.Dict
+This file remaps the key bindings of a single user on Mac OS X 10.5 to more closely
+match default behavior on Windows systems.
+
+You must log out and back in to see these changes.
+
+Here is a rough cheatsheet for syntax.
+Key Modifiers
+^ : Ctrl
+$ : Shift
+~ : Option (Alt)
+@ : Command (Apple)
+# : Numeric Keypad
+
+Non-Printable Key Codes
+
+Up Arrow:     \UF700        Backspace:    \U0008        F1:           \UF704
+Down Arrow:   \UF701        Tab:          \U0009        F2:           \UF705
+Left Arrow:   \UF702        Escape:       \U001B        F3:           \UF706
+Right Arrow:  \UF703        Enter:        \U000A        ...
+Insert:       \UF727        Page Up:      \UF72C
+Delete:       \UF728        Page Down:    \UF72D
+Home:         \UF729        Print Screen: \UF72E
+End:          \UF72B        Scroll Lock:  \UF72F
+Break:        \UF732        Pause:        \UF730
+SysReq:       \UF731        Menu:         \UF735
+Help:         \UF746
+
+Reference links:
+http://osxnotes.net/keybindings.html
+http://heisencoder.net/2008/04/fixing-up-mac-key-bindings-for-windows.html
+http://benogle.com/2010/01/18/windowslinux-developers-remap-your-mac.html
+Full? list of available actions can be found in these pages:
+https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/nsresponder_Class/Reference/Reference.html
+https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/NSApplication_Class/Reference/Reference.html
+https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/nsdocument_Class/Reference/Reference.html
+https://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/NSTextView_Class/Reference/Reference.html
+http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/ApplicationKit/Classes/NSWindow_Class/Reference/Reference.html
+*/
+
+{
+"\UF729"   = "moveToBeginningOfLine:";                       /* Home         */
+"^\UF729"  = "moveToBeginningOfDocument:";                   /* Ctrl  + Home  */
+"$\UF729"  = "moveToBeginningOfLineAndModifySelection:";     /* Shift + Home */
+"$^\UF729" = "moveToBeginningOfDocumentAndModifySelection:"; /* Shift + Ctrl  + Home */
+"\UF72B"   = "moveToEndOfLine:";                             /* End          */
+"^\UF72B"  = "moveToEndOfDocument:";                         /* Ctrl  + End   */
+"$\UF72B"  = "moveToEndOfLineAndModifySelection:";           /* Shift + End  */
+"$^\UF72B" = "moveToEndOfDocumentAndModifySelection:";       /* Shift + Ctrl  + End */
+
+"^x"  = "cut:";                                              /* Ctrl + X  */
+"^v"  = "paste:";                                            /* Ctrl + V */
+"^c"  = "copy:";                                             /* Ctrl + C */
+"^z"  = "undo:";                                             /* Ctrl + Z */
+"^a"  = "selectAll:";                                        /* Ctrl + A */
+"^f"  = "performFindAction:";                                /* Ctrl + A */
+
+"~\UF707"  = "performClose:";                                /* Alt + F4 */
+
+"$\UF728"  = "cut:";                                         /* Shift + Del  */
+"$\UF727"  = "paste:";                                       /* Shift + Ins */
+"^\UF727"  = "copy:";                                        /* Ctrl  + Ins  */
+"$\UF746"  = "paste:";                                       /* Shift + Help */
+"^\UF746"  = "copy:";                                        /* Ctrl  + Help (Ins) */
+
+"^\UF702"  = "moveWordBackward:";                            /* Ctrl  + LeftArrow */
+"^\UF703"  = "moveWordForward:";                             /* Ctrl  + RightArrow */
+"$^\UF702" = "moveWordBackwardAndModifySelection:";   /* Shift + Ctrl  + Leftarrow */
+"$^\UF703" = "moveWordForwardAndModifySelection:";   /* Shift + Ctrl  + Rightarrow */
+}

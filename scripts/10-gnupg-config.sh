@@ -1,4 +1,3 @@
-#!/bin/bash
 RELOAD_AGENT=
 
 if ! grep -q use-agent "$HOME/.gnupg/gpg.conf" 2>/dev/null; then
@@ -41,5 +40,8 @@ if [ ! -z "$RELOAD_AGENT" ]; then
     gpg-connect-agent <<< RELOADAGENT &>/dev/null
 fi
 
-systemctl --user mask --now ssh-agent.service
-systemctl --user enable --now gpg-agent.socket
+if [ -n "$(command -v systemctl)" ]; then
+    systemctl --user mask --now ssh-agent.service
+    systemctl --user enable --now gpg-agent.socket
+    systemctl --user enable --now gpg-agent-ssh.socket
+fi

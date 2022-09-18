@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 BASEDIR="$(readlink -f `dirname  $0`/..)";
-. $BASEDIR/overlay/.env
+#. $BASEDIR/overlay/.env
 
 if [ -n "$1" ]; then
     LEVEL="$1"
@@ -36,19 +36,22 @@ case $LEVEL in
     "standard")
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent patch zip unzip jq \
-                mlocate pinentry-curses_ '?and(~n^plymouth_,?not(~v))'
+                mlocate pinentry-curses_ '?and(~n^plymouth_,?not(~v))' neovim restic
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox git rsync pinentry-tty gpg-agent patch zip unzip jq \
-                mlocate
+                mlocate neovim restic
     ;;
     "extra")
         aptitude install \
             apt-file arch-test autoconf automake autotools-dev build-essential debhelper debian-keyring debootstrap \
             devscripts dh-make dkms dosfstools dpkg-dev dput dupload e2fsprogs-l10n eatmydata equivs fakeroot fancontrol \
-            gdisk git gnupg hdparm htop i2c-tools irqbalance jq lintian linux-headers-$(uname -r) linux-headers-amd64 \
+            gdisk git gnupg hdparm htop i2c-tools irqbalance jq lintian shared-mime-info xauth linux-headers-amd64 \
             lm-sensors localepurge manpages-dev mlocate mutt net-tools nocache nvme-cli parted patch patchutils pbuilder pigz \
-            powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools w3m xutils-dev zfs-dkms \
-            zfs-initramfs shared-mime-info xauth xdg-user-dirs
+            powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools w3m xutils-dev xdg-user-dirs neovim
+    ;;
+    "zfs")
+    	aptitude install \
+	    linux-headers-$(uname -r) zfs-dkms zfs-initramfs
     ;;
     *)
         echo "Not implemented" >&2

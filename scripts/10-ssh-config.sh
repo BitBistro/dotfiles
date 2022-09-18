@@ -1,5 +1,3 @@
-#!/bin/bash
-
 SSH_CONFIG="${HOME}/.ssh/config"
 exec 11>>"$SSH_CONFIG"
 
