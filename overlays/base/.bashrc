@@ -37,7 +37,7 @@ if ! command -v kubectl &> /dev/null && command -v minikube &> /dev/null; then
     alias kubectl="minikube kubectl --"
 fi
 if command -v kubectl &>/dev/null; then
-    alias k="kubectl"
+   alias k="kubectl"
 fi
 PS1='$ '
 
@@ -84,9 +84,8 @@ else
     addPATH /usr/local/opt/coreutils/libexec/gnubin
     # set PATH so it includes user's private bin if it exists
     addPATH "${HOME}/bin"
-    addPATH "${HOME}/.../bin"
     addPATH "${HOME}/.local/bin"
-    addCDPATH "${HOME}/...:"
+    addCDPATH "${HOME}/..."
 fi
 
 # and go ...
@@ -189,7 +188,6 @@ if [ "$color_prompt" = yes ]; then
         git_branch_color="0m"
         git_branch=""
         git_dirty=""
-        git_space=""
 
         # Based on https://github.com/jimeh/git-aware-prompt/blob/master/prompt.sh
         function find_git_branch() {
@@ -197,9 +195,8 @@ if [ "$color_prompt" = yes ]; then
             git_branch_color="0m"
             git_branch=""
             git_dirty=""
-            git_space=""
             if branch=$(command git rev-parse --abbrev-ref HEAD 2> /dev/null); then
-                if [[ $branch == "master" || $branch == "HEAD" ]]; then
+                if [[ "$branch" == "master" || "$branch" == "HEAD"  || "$branch" == "main" ]]; then
                     git_branch_color="33m"
                 fi
                 local status=$(command git status --porcelain 2> /dev/null)
@@ -207,11 +204,10 @@ if [ "$color_prompt" = yes ]; then
                     git_dirty="*"
                 fi
                 git_branch=" ($branch)"
-                git_space=" "
             fi
         }
 
-        if [[ ! $PROMPT_COMMAND =~ "find_git_branch" ]]; then
+        if [[ ! "$PROMPT_COMMAND" =~ "find_git_branch" ]]; then
             if [ -n "$HAS_BREW" ]; then
                 PROMPT_COMMAND="/usr/bin/git --version &>/dev/null & disown; PROMPT_COMMAND=\"find_git_branch; $PROMPT_COMMAND\""
             else
@@ -221,19 +217,22 @@ if [ "$color_prompt" = yes ]; then
     fi
 
     # Sets up a super fancy color prompt that includes the git variables. If git prompts are set the prompt will still be fine.
-    PS1="\${prompt_context:+(\[\033[\${prompt_context_color}\]\${prompt_context}\[\033[00m\]) }\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[\${git_branch_color}\]\${git_branch}\[\e[0;31m\]\${git_dirty}\[\033[00m\]\${git_space}\\$ "
+    PS1='${prompt_context:+"(\[\033[0m\]${prompt_context}\[\033[00m\]) "}'
+    PS1="${PS1}"'\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w'
+    PS1="${PS1}"'\[\033[${git_branch_color}\]${git_branch}'
+    PS1="${PS1}"'\[\e[0;31m\]${git_dirty}\[\033[00m\]${git_branch:+" "}\$ '
 else
     # set a fancy prompt (non-color, overwrite the one in /etc/profile)
     # but only if not SUDOing and have SUDO_PS1 set; then assume smart user.
     if ! [ -n "${SUDO_USER}" -a -n "${SUDO_PS1}" ]; then
-        PS1='${prompt_context:+$prompt_context }\u@\h:\w\$ '
+        PS1='${prompt_context:+"$prompt_context "}\u@\h:\w\$ '
     fi
 fi
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
     xterm*|rxvt*)
-        PS1="\[\e]0;\${prompt_context:+\$prompt_context }\h: \w\a\]$PS1"
+        PS1='\[\e]0;${prompt_context:+"$prompt_context "}\l@\h: \W\a\]'"$PS1"
         ;;
     *)
         ;;

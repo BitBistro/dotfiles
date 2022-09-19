@@ -41,6 +41,7 @@ run-now() {
 
 case "$1" in
     -y)
+        export WITH_FORCE=true
         run-now
         ;;
     help)
@@ -48,7 +49,7 @@ case "$1" in
         ;;
     *)
         yn=n
-        read -p "Process with setup [y/N]? " yn; echo
+        read -p "Process with setup [y/N]? " -n1 yn; echo
         if [ "$yn" == "y" ]; then
             run-now
         else
