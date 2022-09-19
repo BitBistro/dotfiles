@@ -5,7 +5,7 @@ OKCD="$(pwd)"
 trap 'cd "$OKCD"' EXIT
 
 if [ "$2" == "linux" ]; then
-    _VER="go1.19.1"
+    _VER="go1.19.2"
     _DL="https://go.dev/dl/${_VER}.linux-amd64.tar.gz"
 
     if [ ! -f /usr/local/go/VERSION ] || [ "$_VER" != "$(cat /usr/local/go/VERSION)" ]; then
