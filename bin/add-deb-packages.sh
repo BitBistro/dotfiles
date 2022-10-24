@@ -53,22 +53,21 @@ case $LEVEL in
             powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs neovim gdb \
 	    linux-doc info iw bison flex gnupg libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils ntfs-3g vdpau-driver-all va-driver-all exfat-utils exfat-fuse \
-            fbset ~n^mesa
+            fbset ~n^mesa va-driver-all
     ;;
     "backports")
     	aptitude -t bullseye-backports full-upgrade -y
 	;;
     "thisbe")
     	aptitude install -t bullseye-backports \
-	    '?and(~n^firmware,!~nnvidia,!microbit)' intel-gpu-tools intel-media-va-driver intel-media-va-driver-non-free \
-            intel-hdcp_
+	    '?and(~n^firmware,!~nnvidia,!microbit)' intel-gpu-tools intel-media-va-driver-non-free intel-hdcp_
     ;;
-    "xserver")
-    	aptitude install -t bullseye-backports \
-            xserver-xorg-video-intel
+    "desktop")
+        aptitude -t bullseye-backports -o APT::Install-Recommends=true -o APT::Get::AutomaticRemove=true -o Acquire::Retries=3 \
+            install task-desktop task-xfce-desktop task-ssh-server
     ;;
     "cleanup")
-        dpkg -l | awk 'c&&!/ii/{print $2}/^\+/{c=1}' | xargs aptitude purge -y
+        dpkg -l | awk 'c&&!/ii/{print $2}/^\+/{c=1}' | xargs aptitude purge -t bullseye-backports -y
     ;;
     "zfs")
     	aptitude install \
