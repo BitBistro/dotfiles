@@ -100,15 +100,6 @@ nnoremap <C-D> "_dd
 " Clear search criteria with Tab key
 nnoremap <Tab> :noh<CR>
 
-
-" Example of mapping F-keys from http://vim.wikia.com/wiki/VimTip632
-" If you like :set guifont=*, you could always map a key to allow you to quickly choose a font. For example:
-" map <F3> <Esc>:set guifont=*<CR>
-
-" Map <C-S-F> to format all
-map <ESC>[1;bf <C-S-F>
-map <C-S-F> gg=G``
-
 if has("gui_running") || &term =~ "xterm"
     " Map control left right, to skip by word gui and terminal input
     map <C-LEFT> b
@@ -190,11 +181,12 @@ if $_HAS_COLORS > 0
     set colorcolumn=80,128
     syntax on
     try
+        hi ColorColumn ctermbg=236 cterm=none guibg=#2c2c2c gui=none
+        colorscheme pablo
         colorscheme wombat256mod
     catch
         colorscheme pablo
     endtry
-    hi ColorColumn ctermbg=236 cterm=none guibg=#2c2c2c gui=none
 endif
 
 

@@ -64,7 +64,7 @@ case $LEVEL in
     ;;
     "desktop")
         aptitude -t bullseye-backports -o APT::Install-Recommends=true -o APT::Get::AutomaticRemove=true -o Acquire::Retries=3 \
-            install task-desktop task-xfce-desktop task-ssh-server
+            install task-desktop task-xfce-desktop task-ssh-server xdg-desktop-portal-gtk_ xdg-desktop-portal_ plymouth-label_
     ;;
     "cleanup")
         dpkg -l | awk 'c&&!/ii/{print $2}/^\+/{c=1}' | xargs aptitude purge -t bullseye-backports -y
