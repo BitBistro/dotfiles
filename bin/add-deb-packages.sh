@@ -64,7 +64,8 @@ case $LEVEL in
     ;;
     "desktop")
         aptitude -t bullseye-backports -o APT::Install-Recommends=true -o APT::Get::AutomaticRemove=true -o Acquire::Retries=3 \
-            install task-desktop task-xfce-desktop task-ssh-server xdg-desktop-portal-gtk_ xdg-desktop-portal_ plymouth-label_
+            install task-desktop task-xfce-desktop task-ssh-server xdg-desktop-portal-gtk_ xdg-desktop-portal_ plymouth-label_ \
+            libegl1-mesa
     ;;
     "cleanup")
         dpkg -l | awk 'c&&!/ii/{print $2}/^\+/{c=1}' | xargs aptitude purge -t bullseye-backports -y
@@ -72,6 +73,9 @@ case $LEVEL in
     "zfs")
     	aptitude install \
 	    linux-headers-$(uname -r) zfs-dkms zfs-initramfs
+    ;;
+    "kvm") 
+        aptitude install qemu-kvm
     ;;
     *)
         echo "Not implemented" >&2
