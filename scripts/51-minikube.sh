@@ -1,10 +1,9 @@
-#!/bin/bash
 BASEDIR="$1"
 OSENV="$2"
 OKCD="$(pwd)"
 trap 'cd "$OKCD"' EXIT
 
-if [ "$2" == "linux" ]; then
+if [ "$OSENV" == "linux" ]; then
     tmpdir="$(mktemp -d)"
     cd "$tmpdir"
     cd "`readlink -f .`"

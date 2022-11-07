@@ -1,10 +1,9 @@
-#!/bin/bash
 BASEDIR="$1"
 OSENV="$2"
 OKCD="$(pwd)"
 trap 'cd "$OKCD"' EXIT
 
-if [ "$2" == "linux" ]; then
+if [ "$OSENV" == "linux" ]; then
     _VER="go1.19.2"
     _DL="https://go.dev/dl/${_VER}.linux-amd64.tar.gz"
 
