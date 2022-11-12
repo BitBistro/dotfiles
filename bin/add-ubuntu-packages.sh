@@ -38,11 +38,11 @@ case $LEVEL in
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
 		ubuntu-server bash-completion vim-nox git rsync pinentry-tty pinentry-curses_ gpg-agent rsync patch \
 		zip unzip jq plocate neovim restic curl openssl bsdutils ncal rfkill wpasupplicant w3m parted bc dc \
-		kmod btrfs-progs tcpdump wget wodim busybox-static zfs-dkms zfs-initramfs
+		kmod btrfs-progs tcpdump wget wodim busybox-static zfs-dkms zfs-initramfs ssh
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
 		ubuntu-server bash-completion vim-nox git rsync pinentry-tty pinentry-curses_ gpg-agent rsync patch \
 		zip unzip jq plocate neovim restic curl openssl bsdutils ncal rfkill wpasupplicant w3m parted bc dc \
-		kmod btrfs-progs tcpdump wget wodim busybox-static zfs-dkms zfs-initramfs
+		kmod btrfs-progs tcpdump wget wodim busybox-static zfs-dkms zfs-initramfs ssh
     ;;
     "extra")
         aptitude install \
