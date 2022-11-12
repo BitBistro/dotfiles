@@ -4,6 +4,12 @@ if [ "$(uname -s | tr A-Z a-z)" == "darwin" ]; then
     OSENV="darwin"
 fi
 
+FLAVOR="unknown"
+if command -v lsb_release &> /dev/null ; then
+    FLAVOR="$(tr A-Z a-z<<<`lsb_release -i -s`)"
+fi
+
+
 READLINK=$(command -v greadlink readlink | head -n1)
 BASEDIR="$($READLINK -f `dirname  $0`/..)";
 
@@ -31,7 +37,7 @@ run-now() {
     SCRIPTS=$(command find $REPRE "${BASEDIR}/scripts" ${REGEXTYPE[*]} -maxdepth 1 -regex '^.*\/[0-9][0-9][a-zA-Z-]+\.sh$' -type f -print | command sort)
     for SCRIPT in $SCRIPTS; do
         echo "Running: $SCRIPT"
-        /bin/bash "${SCRIPT}" "${BASEDIR}" "${OSENV}"
+        /bin/bash "${SCRIPT}" "${BASEDIR}" "${OSENV}" "${FLAVOR}"
         if [ $? -eq 255 ]; then
             echo "Error 255 encountered in script '$SCRIPT'"
             exit 255

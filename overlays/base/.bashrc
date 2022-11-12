@@ -218,7 +218,7 @@ if [ "$color_prompt" = yes ]; then
 
     # Sets up a super fancy color prompt that includes the git variables. If git prompts are set the prompt will still be fine.
     PS1='${prompt_context:+"(\[\033[0m\]${prompt_context}\[\033[00m\]) "}'
-    PS1="${PS1}"'\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w'
+    PS1="${PS1}"'\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[00;34m\]\w'
     PS1="${PS1}"'\[\033[${git_branch_color}\]${git_branch}'
     PS1="${PS1}"'\[\e[0;31m\]${git_dirty}\[\033[00m\]${git_branch:+" "}\$ '
 else
@@ -277,11 +277,12 @@ alias hogs='ps -eorss,args | sort -nr | pr -TW$COLUMNS | head'
 alias rnd='echo $(dd if=/dev/urandom of=>(strings) bs=1024 count=1 2>/dev/null)'
 
 # enable color support of ls and also add handy aliases
-if command -v dircolors &>/dev/null; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+if command -v /usr/bin/dircolors &>/dev/null; then
+    eval $(/usr/bin/dircolors -b <(/usr/bin/dircolors -p | sed -nre '/00;/ {s/ 00;/ 01;/p;d}; s/01;/00;/p'))
     alias ls='ls --color=auto'
     alias egrep='egrep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias grep='grep --color=auto'
     alias grpe='grep --color=auto'
 fi
+
