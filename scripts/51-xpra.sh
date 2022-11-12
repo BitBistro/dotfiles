@@ -2,6 +2,7 @@ BASEDIR="$1"
 OSENV="$2"
 
 if [ "$OSENV" = "linux" ]; then
+    exit 0
 
     if [ ! -f "/usr/share/keyrings/xpra-2022.gpg" ]; then
         sudo wget -O "/usr/share/keyrings/xpra-2022.gpg" https://xpra.org/xpra-2022.gpg
