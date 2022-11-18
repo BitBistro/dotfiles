@@ -250,4 +250,5 @@ filetype indent on
 au BufRead,BufNewFile *.xml set filetype=xhtml
 " Turn off auto-commenting and some auto-wrapping
 autocmd FileType * setlocal formatoptions-=t formatoptions-=c formatoptions-=r formatoptions-=o
-autocmd BufNewFile,BufRead *.go set noexpandtab filetype=go sw=5 shiftwidth=5 tabstop=5 softtabstop=5
+autocmd BufNewFile,BufRead *.go set noexpandtab filetype=go shiftwidth=5 tabstop=5 softtabstop=5
+autocmd BufNewFile,BufRead *.sh set expandtab filetype=sh shiftwidth=2 tabstop=2 softtabstop=2
