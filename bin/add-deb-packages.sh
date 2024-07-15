@@ -31,17 +31,17 @@ case $LEVEL in
     "base")
         apt upgrade
         apt -y install aptitude aptitude-doc-en
-        aptitude -y install "?and(?architecture(native),?or(~prequired))" bash-completion vim-nox git rsync pinentry-tty\
+        aptitude -y install "?and(?architecture(native),?or(~prequired))" bash-completion vim-nox git rsync pinentry-tty \
                 pinentry-curses_ gpg-agent
     ;;
     "standard")
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox rsync pinentry-tty gpg-agent patch zip unzip jq \
                 mlocate pinentry-curses_ '?and(~n^plymouth_,?not(~v))' neovim restic curl openssl bsdutils ncal rfkill \
-                wpasupplicant w3m parted crda bc dc kmod btrfs-progs tcpdump wget wodim busybox-static
+                wpasupplicant w3m parted bc dc kmod btrfs-progs tcpdump wget wodim busybox-static
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox rsync pinentry-tty gpg-agent patch zip unzip jq \
-                mlocate neovim restic curl openssl bsdutils ncal rfkill wpasupplicant w3m parted crda bc dc kmod btrfs-progs \
+                mlocate neovim restic curl openssl bsdutils ncal rfkill wpasupplicant w3m parted bc dc kmod btrfs-progs \
                 tcpdump wget wodim busybox-static
     ;;
     "extra")
@@ -52,12 +52,9 @@ case $LEVEL in
             lm-sensors localepurge manpages-dev mlocate mutt net-tools nocache nvme-cli parted patch patchutils pbuilder pigz \
             powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs neovim gdb \
 	    linux-doc info iw bison flex gnupg libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
-            debconf-utils eject ethtool packagekit cifs-utils ntfs-3g vdpau-driver-all va-driver-all exfat-utils exfat-fuse \
+            debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
             fbset ~n^mesa va-driver-all
     ;;
-    "backports")
-    	aptitude -t bullseye-backports full-upgrade -y
-	;;
     "thisbe")
     	aptitude install -t bullseye-backports \
 	    '?and(~n^firmware,!~nnvidia,!microbit)' intel-gpu-tools intel-media-va-driver-non-free intel-hdcp_
@@ -68,7 +65,7 @@ case $LEVEL in
             libegl1-mesa
     ;;
     "cleanup")
-        dpkg -l | awk 'c&&!/ii/{print $2}/^\+/{c=1}' | xargs aptitude purge -t bullseye-backports -y
+        dpkg -l | awk 'c&&!/ii/{print $2}/^\+/{c=1}' | xargs aptitude purge -y
     ;;
     "zfs")
     	aptitude install \
