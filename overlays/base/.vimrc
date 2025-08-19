@@ -54,14 +54,6 @@ set tw=0                    " disable textwidth
 set modeline                " enables modeline searching
 set lazyredraw              " don't redraw during macros
 
-" Mouse behavior, selection, and clipboard
-behave xterm
-if has("mouse")
-    set mouse=a
-    set mousehide=on
-    set mousefocus
-endif
-
 set selection=inclusive
 set selectmode=
 set mousemodel=popup
@@ -79,9 +71,23 @@ if has("nvim")
     set iconstring=nvim
 endif
 
+" Mouse behavior, selection, and clipboard
+if has("xterm")
+    behave xterm
+endif
+if has("mouse")
+    set mouse=a
+    if has("mousehide")
+        set mousehide=on
+    endif
+    set mousefocus
+endif
 
-" Turn off an off paste mode with F8 (must be in insert mode first)
-set pastetoggle=<F2>
+
+" Turn off an off paste mode with F2 (must be in insert mode first)
+if has("pastetoggle")
+    set pastetoggle=<F2>
+endif
 
 " Copy selected text in visual mode to yank buffer
 vnoremap y ygv
@@ -99,6 +105,15 @@ nnoremap <C-D> "_dd
 
 " Clear search criteria with Tab key
 nnoremap <Tab> :noh<CR>
+
+
+" Example of mapping F-keys from http://vim.wikia.com/wiki/VimTip632
+" If you like :set guifont=*, you could always map a key to allow you to quickly choose a font. For example:
+" map <F3> <Esc>:set guifont=*<CR>
+
+" Map <C-S-F> to format all
+map <ESC>[1;bf <C-S-F>
+map <C-S-F> gg=G``
 
 if has("gui_running") || &term =~ "xterm"
     " Map control left right, to skip by word gui and terminal input
@@ -178,15 +193,14 @@ if $_HAS_COLORS > 0
     filetype plugin indent on
 
     let do_syntax_sel_menu = 1
-    set colorcolumn=80,128
+    set colorcolumn=80,120
     syntax on
     try
-        hi ColorColumn ctermbg=236 cterm=none guibg=#2c2c2c gui=none
-        colorscheme pablo
         colorscheme wombat256mod
     catch
         colorscheme pablo
     endtry
+    hi ColorColumn ctermbg=236 cterm=none guibg=#2c2c2c gui=none
 endif
 
 
@@ -250,5 +264,6 @@ filetype indent on
 au BufRead,BufNewFile *.xml set filetype=xhtml
 " Turn off auto-commenting and some auto-wrapping
 autocmd FileType * setlocal formatoptions-=t formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd FileType sh set expandtab filetype=sh shiftwidth=2 tabstop=2 softtabstop=2
 autocmd BufNewFile,BufRead *.go set noexpandtab filetype=go shiftwidth=5 tabstop=5 softtabstop=5
 autocmd BufNewFile,BufRead *.sh set expandtab filetype=sh shiftwidth=2 tabstop=2 softtabstop=2

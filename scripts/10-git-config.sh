@@ -5,7 +5,10 @@ fi
 exec 9>&1 1>/dev/null
 git config --global --get user.email || git config --global user.email "mike@bitbistro.org"
 git config --global --get user.name || git config --global user.name "Mike Perry"
+git config --global --get diff.tool || git config --global diff.tool "vimdiff"
+git config --global --get gpg.program || git config --global gpg.program "gpg"
 git config --global --get core.pager || git config --global core.pager "$(command -v less) -FRiX"
+git config --global --get core.excludesFiles || git config --global core.excludesFiles "$HOME/.gitignore"
 git config --global --get pull.rebase || git config --global pull.rebase "false"
 git config --global --get alias.alias || git config --global alias.alias '!git config --global -l | '"awk -F'.' '/^alias\./&&"'!'"/^alias.alias/ {print "'"alias",$2}'"'"
 git config --global --get alias.pick || git config --global alias.pick "cherry-pick"
