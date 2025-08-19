@@ -1,0 +1,35 @@
+[user]
+    signingkey = 27C4382B0DDA8D933E99CF5640DA8AEAE4E96558
+    email = mperry@octolabs.io
+	name = Mike Perry
+[url "ssh://git@code.8labs.io/"]
+    insteadOf = https://code.8labs.io/
+[diff]
+    tool = vimdiff
+[commit]
+        gpgsign = true
+[gpg]
+    program = gpg
+[core]
+	pager = /usr/bin/less -FRiX
+	editor = vim
+	excludesFile = /Users/MPerry/.gitignore
+[branch "master"]
+	merge = refs/head/main
+[init]
+	defaultBranch = main
+[push]
+	default = simple
+	autoSetupRemote = true
+[pull]
+	rebase = false
+[url "git@code.8labs.io:"]
+	insteadOf = https://code.8labs.io/
+	insteadOf = https://code.8labs.io/
+[alias]
+	pick = cherry-pick
+	graph = log --oneline --graph
+	ff = pull --no-commit --ff-only origin
+	alias = !git config --global -l | awk -F'.' '/^alias\\./&&!/^alias.alias/ {print \"alias\",$2}'
+	mod = !go mod
+	orphans = "!git fetch -p; git remote prune origin; git checkout -d; git checkout master; git pull -q; git branch -vv --color=never | sed -nre \"s/^([[:space:]]+)([^[:space:]]+)[[:space:]].*\\[origin[^:]+: gone\\].*/\\2/p\" || echo none >&2"
