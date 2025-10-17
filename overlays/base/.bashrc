@@ -87,6 +87,7 @@ else
     # set PATH so it includes user's private bin if it exists
     addPATH "${HOME}/bin"
     addPATH "${HOME}/.local/bin"
+    addPATH "/mnt/c/Windows/System32"
     addCDPATH "${HOME}/..."
 fi
 
@@ -256,7 +257,7 @@ if [ -z $SKIP_GPG_AGENT ] && type gpg-agent &>/dev/null; then
         fi
     fi
     GPG_SSH_AGENT_SOCKET="$(gpgconf --list-dirs agent-ssh-socket)"
-    if [ -z "${SSH_AUTH_SOCK}" ] || [ "${SSH_AUTH_SOCK}" != "${GPG_SSH_AGENT_AGENT_SOCKET}" ]; then
+    if [ -z "${SSH_AUTH_SOCK}" ] || [ "${SSH_AUTH_SOCK}" != "${GPG_SSH_AGENT_SOCKET}" ]; then
         export SSH_AUTH_SOCK="${GPG_SSH_AGENT_SOCKET}"
         unset SSH_AGENT_PID
     fi
