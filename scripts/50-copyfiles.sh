@@ -1,3 +1,8 @@
+if [ -f "$HOME/.skip_copy_files" ]; then
+  echo "skipping"
+  exit 0
+fi
+
 if [ ! -e /usr/bin/rsync ]; then
      echo "rsync not installed"
      exit 255;

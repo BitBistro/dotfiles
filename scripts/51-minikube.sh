@@ -1,3 +1,6 @@
+echo "skipping"
+exit 0
+
 BASEDIR="$1"
 OSENV="$2"
 OKCD="$(pwd)"
