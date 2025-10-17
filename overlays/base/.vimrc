@@ -11,56 +11,63 @@ set noswapfile
 
 " see :help feature-list
 if has("win32")
-    set backupdir=h:\tmp,c:\tmp,c:\temp
-    set directory=h:\tmp,c:\tmp,c:\temp
-    set undodir=h:\tmp,c:\tmp,c:\temp
+    set backupdir=c:\temp
+    set directory=c:\temp
+    set undodir=c:\temp
 else
     set directory=~/.vim/tmp,/var/tmp,/tmp
     set backupdir=~/.vim/tmp,/var/tmp,/tmp
     set undodir=~/.vim/tmp,/var/tmp,/tmp
 endif
 
-try
-    set undofile
-catch
-    echo "Could not create undofile"
-endtry
+if !has("ide")
+    try
+        set undofile
+    catch
+        echo "Could not create undofile"
+    endtry
+endif
 
 " Options
 set bs=indent,eol,start     " allow backspacing over everything in insert mode
-set title                   " sets terminal title: Make sure your PS1 resets the title otherwise it will say as vim puts it
-set titleold=""             " Stop vim from setting: Thanks for flying VIM
-set scrolloff=5             " Keep context when scrolling
-set showmatch               " Show matching brackets.
-set history=1024            " number of command lines in history
-set ruler                   " show the cursor position all the time
-set showcmd                 " display incomplete commands
-set incsearch               " do incremental searching
-set ignorecase smartcase    " Do case insensitive matching unless 1 cap
-set wildmenu                " turn on command line completion
 set completeopt=            " don't use a pop up menu for completions
 set diffopt=filler,iwhite   " Diff options
+set hidden                  " don't unload a buffer when no longer shown in a window
+set history=1024            " number of command lines in history
+set hlsearch
+set ignorecase smartcase    " Do case insensitive matching unless 1 cap
+set incsearch               " do incremental searching
+set infercase               " case inferred by default
+set lazyredraw              " don't redraw during macros
+set lbr                     " When wrapping is on, break between words
+set modeline                " enables modeline searching
+set noerrorbells            " don't make noise for bell
+set norelativenumber
+set novisualbell            " don't flash the screen on bell
+set nowrap                  " do not wrap line
 set number                  " line numbers
 set numberwidth=4           " Format to 3 spaces
-set noerrorbells            " don't make noise for bell
-set novisualbell            " don't flash the screen on bell
+set ruler                   " show the cursor position all the time
+set scrolloff=10
+set scrolloff=5             " Keep context when scrolling
 set shiftround              " when at 3 spaces, and I hit > ... go to 4, not 5
-set hidden                  " don't unload a buffer when no longer shown in a window
-set infercase               " case inferred by default
-set lbr                     " When wrapping is on, break between words
-set nowrap                  " do not wrap line
 set shortmess=atI           " Stifle many interruptive prompts
+set showcmd                 " display incomplete commands
+set showmatch               " Show matching brackets.
+set showmode
+set smartcase
+set titleold=""             " Stop vim from setting: Thanks for flying VIM
+set title                   " sets terminal title: Make sure your PS1 resets the title otherwise it will say as vim puts it
 set tw=0                    " disable textwidth
-set modeline                " enables modeline searching
-set lazyredraw              " don't redraw during macros
-
+set visualbell
+set wildmenu                " turn on command line completion
 set selection=inclusive
 set selectmode=
 set mousemodel=popup
 set keymodel-=stopsel
 
 if has("clipboard")
-    set clipboard=unnamed
+    set clipboard+=unnamedplus
 endif
 
 if has("gtk")
@@ -83,16 +90,20 @@ if has("mouse")
     set mousefocus
 endif
 
-
 " Turn off an off paste mode with F2 (must be in insert mode first)
 if has("pastetoggle")
     set pastetoggle=<F2>
 endif
 
 " Copy selected text in visual mode to yank buffer
-vnoremap y ygv
-vnoremap <LeftRelease> ygv
-noremap <LeftRelease> ygv
+nnoremap yy "+yy
+vnoremap y "+ygv
+vnoremap <LeftRelease> "+ygv
+noremap <LeftRelease> "+ygv
+nnoremap p "+p
+vnoremap p "+p
+nnoremap P "+P
+vnoremap P "+P
 
 " allow deleting selection without updating the clipboard (yank buffer)
 nnoremap x "_x
@@ -196,65 +207,13 @@ if $_HAS_COLORS > 0
     set colorcolumn=80,120
     syntax on
     try
-        colorscheme wombat256mod
+        " colorscheme wombat256mod
+        colorscheme nord
     catch
         colorscheme pablo
     endtry
-    hi ColorColumn ctermbg=236 cterm=none guibg=#2c2c2c gui=none
+    highlight ColorColumn ctermbg=236 cterm=none guibg=#2c2c2c gui=none
 endif
-
-
-" Adapted from https://stackoverflow.com/a/24046914
-let s:comment_map = { 
-    \   "c": '\/\/',
-    \   "cpp": '\/\/',
-    \   "go": '\/\/',
-    \   "java": '\/\/',
-    \   "javascript": '\/\/',
-    \   "lua": '--',
-    \   "scala": '\/\/',
-    \   "php": '\/\/',
-    \   "python": '#',
-    \   "ruby": '#',
-    \   "rust": '\/\/',
-    \   "sh": '#',
-    \   "desktop": '#',
-    \   "fstab": '#',
-    \   "conf": '#',
-    \   "profile": '#',
-    \   "bashrc": '#',
-    \   "bash_profile": '#',
-    \   "mail": '>',
-    \   "eml": '>',
-    \   "bat": 'REM',
-    \   "ahk": ';',
-    \   "vim": '"',
-    \   "tex": '%',
-    \ }
-
-function! ToggleComment()
-    if has_key(s:comment_map, &filetype)
-        let comment_leader = s:comment_map[&filetype]
-        if getline('.') =~ "^\\s*" . comment_leader . " " 
-            " Uncomment the line
-            execute "silent s/^\\(\\s*\\)" . comment_leader . " /\\1/"
-        else 
-            if getline('.') =~ "^\\s*" . comment_leader
-                " Uncomment the line
-                execute "silent s/^\\(\\s*\\)" . comment_leader . "/\\1/"
-            else
-                " Comment the line
-                execute "silent s/^\\(\\s*\\)/\\1" . comment_leader . " /"
-            end
-        end
-    else
-        echo "No comment leader found for filetype"
-    end
-    echo "here"
-endfunction
-
-nnoremap <C-/> :call ToggleComment()<cr>
-vnoremap <C-/> :call ToggleComment()<cr>gv
 
 " file types
 filetype on
