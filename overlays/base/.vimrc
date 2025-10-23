@@ -43,19 +43,16 @@ set lbr                     " When wrapping is on, break between words
 set modeline                " enables modeline searching
 set noerrorbells            " don't make noise for bell
 set norelativenumber
-set novisualbell            " don't flash the screen on bell
 set nowrap                  " do not wrap line
 set number                  " line numbers
-set numberwidth=4           " Format to 3 spaces
+set numberwidth=4           " Format to 4 spaces
 set ruler                   " show the cursor position all the time
-set scrolloff=10
-set scrolloff=5             " Keep context when scrolling
+set scrolloff=10            " Keep context when scrolling
 set shiftround              " when at 3 spaces, and I hit > ... go to 4, not 5
 set shortmess=atI           " Stifle many interruptive prompts
 set showcmd                 " display incomplete commands
 set showmatch               " Show matching brackets.
 set showmode
-set smartcase
 set titleold=""             " Stop vim from setting: Thanks for flying VIM
 set title                   " sets terminal title: Make sure your PS1 resets the title otherwise it will say as vim puts it
 set tw=0                    " disable textwidth
@@ -65,10 +62,6 @@ set selection=inclusive
 set selectmode=
 set mousemodel=popup
 set keymodel-=stopsel
-
-if has("clipboard")
-    set clipboard+=unnamedplus
-endif
 
 if has("gtk")
     set iconstring=gtk
@@ -95,45 +88,54 @@ if has("pastetoggle")
     set pastetoggle=<F2>
 endif
 
-" Copy selected text in visual mode to yank buffer
-nnoremap yy "+yy
-vnoremap y "+ygv
-vnoremap <LeftRelease> "+ygv
-noremap <LeftRelease> "+ygv
-nnoremap p "+p
-vnoremap p "+p
-nnoremap P "+P
-vnoremap P "+P
+" Clipboard operations
+if has("clipboard")
+    set clipboard+=unnamedplus
+
+    " Copy operations
+    nnoremap yy "+yy
+    nnoremap Y "+y$
+    vnoremap y "+ygv
+    vnoremap <LeftRelease> "+ygv
+
+    " Paste operations
+    nnoremap p "+p
+    vnoremap p "+p
+    nnoremap P "+P
+    vnoremap P "+P
+
+    " Command mode abbreviation
+    cnoreabbrev %y %y+
+endif
 
 " allow deleting selection without updating the clipboard (yank buffer)
 nnoremap x "_x
 nnoremap X "_X
 vnoremap x "_x
 vnoremap X "_X
+nnoremap dd "_dd
+vnoremap d "_d
 
 " Map a ctrl+d to delete a line without ovewriting your buffer
 nnoremap <C-D> "_dd
 
 " Clear search criteria with Tab key
-nnoremap <Tab> :noh<CR>
-
+nnoremap <silent> <Tab> :nohlsearch<CR>
 
 " Example of mapping F-keys from http://vim.wikia.com/wiki/VimTip632
 " If you like :set guifont=*, you could always map a key to allow you to quickly choose a font. For example:
 " map <F3> <Esc>:set guifont=*<CR>
 
 " Map <C-S-F> to format all
-map <ESC>[1;bf <C-S-F>
 map <C-S-F> gg=G``
 
 if has("gui_running") || &term =~ "xterm"
     " Map control left right, to skip by word gui and terminal input
     map <C-LEFT> b
     map <C-RIGHT> w
-    map ^[[D b
-    map ^[[C w
+    map <Esc>[D b
+    map <Esc>[C w
 endif
-
 
 " Change the regexs to act like egrep instead of grep
 nnoremap / /\v
@@ -162,6 +164,7 @@ let $_HAS_COLORS = 0
 if has("gui_running")
     let $_HAS_COLORS = 1
     set icon
+    set guioptions=ecfgimrLta
 elseif $TERM =~ '\v^(linux|xterm-color|.*-256color|tmux|iterm|vte|gnome)(-.*)?$'
     let $_HAS_COLORS = 1
 elseif has("nvim") || has("terminfo")
@@ -172,7 +175,6 @@ endif
 if $_HAS_COLORS > 0
     set t_Co=256
     set termguicolors
-    set hlsearch
     set background=dark
 
     "set t_AB=^[[48;5;%dm
@@ -191,17 +193,12 @@ if $_HAS_COLORS > 0
                 set guifont=DejaVu\ Sans\ Mono\ Book\ 12
             endif
         endtry
-        set guioptions=ecfgimrLta
-        " set guioptions=aefgiLmrt
     endif
 
     let g:is_posix = 1
     " set t_Co=16
 
     " color pablo
-
-    filetype off
-    filetype plugin indent on
 
     let do_syntax_sel_menu = 1
     set colorcolumn=80,120
@@ -222,7 +219,7 @@ filetype indent on
 
 au BufRead,BufNewFile *.xml set filetype=xhtml
 " Turn off auto-commenting and some auto-wrapping
-autocmd FileType * setlocal formatoptions-=t formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd FileType * setlocal formatoptions-=cro
 autocmd FileType sh set expandtab filetype=sh shiftwidth=2 tabstop=2 softtabstop=2
-autocmd BufNewFile,BufRead *.go set noexpandtab filetype=go shiftwidth=5 tabstop=5 softtabstop=5
+autocmd BufNewFile,BufRead *.go set noexpandtab filetype=go shiftwidth=8 tabstop=8 softtabstop=8
 autocmd BufNewFile,BufRead *.sh set expandtab filetype=sh shiftwidth=2 tabstop=2 softtabstop=2
