@@ -89,7 +89,7 @@ if has("pastetoggle")
 endif
 
 " Clipboard operations
-if has("clipboard")
+if has("clipboard") || has("ide")
     set clipboard+=unnamedplus
 
     " Copy operations
@@ -97,6 +97,12 @@ if has("clipboard")
     nnoremap Y "+y$
     vnoremap y "+ygv
     vnoremap <LeftRelease> "+ygv
+
+    " Cut operations
+    nnoremap dd "+dd
+    vnoremap dd "+dd
+    nnoremap d "+d
+    vnoremap d "+d
 
     " Paste operations
     nnoremap p "+p
@@ -106,18 +112,16 @@ if has("clipboard")
 
     " Command mode abbreviation
     cnoreabbrev %y %y+
+
+    " allow deleting selection without updating the clipboard (yank buffer)
+    nnoremap x "_x
+    nnoremap X "_X
+    vnoremap x "_x
+    vnoremap X "_X
+
+    " Map a ctrl+d to delete a line without ovewriting your buffer
+    nnoremap <C-D> "_dd
 endif
-
-" allow deleting selection without updating the clipboard (yank buffer)
-nnoremap x "_x
-nnoremap X "_X
-vnoremap x "_x
-vnoremap X "_X
-nnoremap dd "_dd
-vnoremap d "_d
-
-" Map a ctrl+d to delete a line without ovewriting your buffer
-nnoremap <C-D> "_dd
 
 " Clear search criteria with Tab key
 nnoremap <silent> <Tab> :nohlsearch<CR>
@@ -148,11 +152,11 @@ vnoremap < <gv  " better indentation
 vnoremap > >gv  " better indentation
 
 "
-" Default Formats
-set expandtab
+" Default Formats - Use tabs with 8-character display (Unix standard)
+set noexpandtab
 set tabstop=8
-set softtabstop=4
-set shiftwidth=4
+set softtabstop=8
+set shiftwidth=8
 set autoindent
 
 " Make shift-insert work like in Xterm
@@ -183,7 +187,6 @@ if $_HAS_COLORS > 0
     " Show whitespace
     " MUST be inserted BEFORE the colorscheme command
     autocmd ColorScheme * highlight ExtraWhitespace ctermbg=236 guibg=#2c2c2c
-    autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 
     if has("gui_running")
         try
@@ -210,6 +213,7 @@ if $_HAS_COLORS > 0
         colorscheme pablo
     endtry
     highlight ColorColumn ctermbg=236 cterm=none guibg=#2c2c2c gui=none
+    autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 endif
 
 " file types
@@ -220,6 +224,13 @@ filetype indent on
 au BufRead,BufNewFile *.xml set filetype=xhtml
 " Turn off auto-commenting and some auto-wrapping
 autocmd FileType * setlocal formatoptions-=cro
-autocmd FileType sh set expandtab filetype=sh shiftwidth=2 tabstop=2 softtabstop=2
-autocmd BufNewFile,BufRead *.go set noexpandtab filetype=go shiftwidth=8 tabstop=8 softtabstop=8
-autocmd BufNewFile,BufRead *.sh set expandtab filetype=sh shiftwidth=2 tabstop=2 softtabstop=2
+
+" File types that prefer spaces with specific indentation
+autocmd FileType vim setlocal expandtab shiftwidth=4 softtabstop=4
+autocmd FileType python setlocal expandtab shiftwidth=4 softtabstop=4
+autocmd FileType yaml setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd FileType json setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd FileType javascript,typescript setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd FileType html,css setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd FileType sh setlocal expandtab shiftwidth=2 softtabstop=2

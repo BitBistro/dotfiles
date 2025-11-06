@@ -41,10 +41,10 @@ update_config_boolean "use-agent" "$HOME/.gnupg/gpg.conf"
 update_config_boolean "enable-ssh-support" "$HOME/.gnupg/gpg-agent.conf"
 
 # Always ensure TTL values are set correctly (will update if different)
-update_config_value "default-cache-ttl" "21600" "$HOME/.gnupg/gpg-agent.conf"
-update_config_value "max-cache-ttl" "21600" "$HOME/.gnupg/gpg-agent.conf"
-update_config_value "default-cache-ttl-ssh" "21600" "$HOME/.gnupg/gpg-agent.conf"
-update_config_value "max-cache-ttl-ssh" "21600" "$HOME/.gnupg/gpg-agent.conf"
+update_config_value "default-cache-ttl" "43200" "$HOME/.gnupg/gpg-agent.conf"
+update_config_value "max-cache-ttl" "43200" "$HOME/.gnupg/gpg-agent.conf"
+update_config_value "default-cache-ttl-ssh" "43200" "$HOME/.gnupg/gpg-agent.conf"
+update_config_value "max-cache-ttl-ssh" "43200" "$HOME/.gnupg/gpg-agent.conf"
 
 update_config_value "pinentry-timeout" "60" "$HOME/.gnupg/gpg-agent.conf"
 
