@@ -29,7 +29,7 @@ git config --global --get init.defaultBranch || git config --global init.default
 git config --global --get push.default || git config --global push.default "simple"
 git config --global --get push.autoSetupRemote || git config --global push.autoSetupRemote "true"
 git config --global --get pull.rebase || git config --global pull.rebase "false"
-git config --global --get branch.master.merge || git config --global branch.master.merge "refs/heads/main"
+git config --global --get branch.main.merge || git config --global branch.main.merge "refs/heads/main"
 git config --global --get diff.tool || git config --global diff.tool "nvimdiff"
 git config --global --get core.editor || git config --global core.editor "vim"
 git config --global --get core.safecrlf || git config --global core.safecrlf "true"

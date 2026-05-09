@@ -20,7 +20,7 @@ $0 [ -y | -h ]
     -y assume yes
     -h this help message
 
-Executes files in ${BASEDIR} matching regex pattern [0-9][9-9]-*.sh in lexical
+Executes files in ${BASEDIR}/scripts matching pattern [0-9][0-9][a-zA-Z-]+.sh in lexical
 order.
 
 END_OF_USAGE
@@ -28,13 +28,13 @@ END_OF_USAGE
 }
 
 run-now() {
-    REPOST=('-regextype' 'egrep')
+    REGEXTYPE=('-regextype' 'egrep')
     REPRE=""
     if [ "$OSENV" == "darwin" ]; then
         REPRE='-E'
-	REPOST=""
+        REGEXTYPE=()
     fi
-    SCRIPTS=$(command find $REPRE "${BASEDIR}/scripts" ${REGEXTYPE[*]} -maxdepth 1 -regex '^.*\/[0-9][0-9][a-zA-Z-]+\.sh$' -type f -print | command sort)
+    SCRIPTS=$(command find $REPRE "${BASEDIR}/scripts" "${REGEXTYPE[@]}" -maxdepth 1 -regex '^.*\/[0-9][0-9][a-zA-Z-]+\.sh$' -type f -print | command sort)
     for SCRIPT in $SCRIPTS; do
         echo "Running: $SCRIPT"
         /bin/bash "${SCRIPT}" "${BASEDIR}" "${OSENV}" "${FLAVOR}"
@@ -50,7 +50,7 @@ case "$1" in
         export WITH_FORCE=true
         run-now
         ;;
-    help)
+    -h|help)
         usage
         ;;
     *)

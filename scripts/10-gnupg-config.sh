@@ -57,8 +57,8 @@ if [ -n "$LC_CTYPE" ]; then
 fi
 
 # Set pinentry-program only if the custom script exists
-if [ -f "/home/mperry/.gnupg/pinentry-ide.sh" ]; then
-    update_config_value "pinentry-program" "/home/mperry/.gnupg/pinentry-ide.sh" "$HOME/.gnupg/gpg-agent.conf"
+if [ -f "$HOME/.gnupg/pinentry-ide.sh" ]; then
+    update_config_value "pinentry-program" "$HOME/.gnupg/pinentry-ide.sh" "$HOME/.gnupg/gpg-agent.conf"
 fi
 
 # Use gpgconf for reloading (more reliable than gpg-connect-agent)
