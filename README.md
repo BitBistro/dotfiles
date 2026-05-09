@@ -53,6 +53,19 @@ run and appends them to `~/.env-local`. This file is sourced by:
 - `~/.bashrc` (interactive shells only)
 - `scripts/10-git-config.sh` (at install time)
 
+A typical `~/.env-local`:
+
+```sh
+export GIT_USER_NAME="Jane Doe"
+export GIT_USER_EMAIL="jane@example.com"
+export GIT_SIGNINGKEY="4F3A8B1D2C9E5F70A6B8D3E1C4F9A2B5D8E1C7F3"
+export RESTIC_REPOSITORY="/home/jane/OneDrive/Backup/WSL"
+```
+
+The `GIT_*` vars are written by `scripts/01-init-env-local.sh` and consumed
+by `scripts/10-git-config.sh`. `RESTIC_REPOSITORY` is read at runtime by the
+`backup` tool installed under `~/.local/bin/` — add it by hand.
+
 To update identity variables, edit `~/.env-local` directly or delete the
 relevant `export` lines and re-run `bin/run-scripts.sh`.
 
