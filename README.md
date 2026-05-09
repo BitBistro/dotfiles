@@ -16,6 +16,16 @@ Pass `-y` to skip all confirmation prompts (non-interactive/CI use):
 bin/run-scripts.sh -y
 ```
 
+## Repo layout
+
+| Path | Purpose |
+|------|---------|
+| `bin/` | Entry-point scripts you run by hand: the pipeline dispatcher (`run-scripts.sh`) and the `add-*-packages.sh` package lists. |
+| `scripts/` | Numbered stages run by `bin/run-scripts.sh` in lexical order (see below). |
+| `overlays/` | Dotfiles rsynced into `$HOME` by `50-copyfiles.sh`. `base/` is always applied; OS-specific subdirs (e.g. `darwin/`) are layered on top. |
+| `tools/` | Vendored helper scripts (`backup`, `pinentry`, `browser` + desktop template) installed to `~/.local/bin` by `scripts/09-install-tools.sh`. |
+| `attic/` | Archived one-off scripts kept for reference. Not used by the pipeline. |
+
 ## How it works
 
 `bin/run-scripts.sh` detects the OS and runs every `scripts/NN-name.sh` in
@@ -57,10 +67,16 @@ to flow through again.
 
 ## Package installation
 
-Package lists live in `bin/add-*-packages.sh`. They are not called by the
-main pipeline — invoke them manually as needed:
+Primary target is Debian (bare metal and under WSL). `bin/add-deb-packages.sh`
+is actively maintained and takes a level argument (`base`, `standard`,
+`extra`, `desktop`, `cleanup`, `zfs`, `kvm`):
 
 ```sh
-bin/add-ubuntu-packages.sh standard
-bin/add-mac-packages.sh
+bin/add-deb-packages.sh extra
 ```
+
+`bin/add-ubuntu-packages.sh`, `bin/add-mint-packages.sh`, and
+`bin/add-mac-packages.sh` exist for occasional use but lag the Debian list —
+treat them as starting points, not canonical.
+
+These scripts are not called by the main pipeline; invoke them manually.
