@@ -8,6 +8,8 @@ set -eu
 ENV_FILE="$HOME/.env-local"
 [ -e "$ENV_FILE" ] || touch "$ENV_FILE"
 
+echo "Checking $ENV_FILE for required setup variables..."
+
 # Each entry: VARNAME|prompt text. Add new vars here as the setup scripts grow.
 PROMPTS=(
     "GIT_USER_NAME|Full name for git commits"
