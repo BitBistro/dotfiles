@@ -53,7 +53,7 @@ case $LEVEL in
             powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs neovim gdb \
 	    linux-doc info iw bison flex gnupg libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
-            fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils ripgrep
+            fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils ripgrep git-filter-repo
     ;;
     "thisbe")
     	aptitude install -t bullseye-backports \
