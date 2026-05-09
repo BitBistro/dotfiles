@@ -6,9 +6,11 @@ if ! command -v git >/dev/null 2>&1; then
     exit 255;
 fi
 
-# GIT_USER_NAME / GIT_USER_EMAIL / GIT_SIGNINGKEY are expected to already be
-# exported in the calling shell (typically via ~/.bashrc sourcing ~/.env-local).
-# If they're unset the corresponding `git config` lines below are no-ops.
+# Fall back to ~/.env-local if the GIT_* vars aren't already exported
+# (covers the first-run case before the parent shell has them).
+if [ -z "${GIT_USER_NAME:-}" ] && [ -r "$HOME/.env-local" ]; then
+    . "$HOME/.env-local"
+fi
 
 exec 9>&1 1>/dev/null
 
