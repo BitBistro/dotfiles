@@ -1,3 +1,6 @@
+BASEDIR="${1:-}"
+OSENV="${2:-}"
+
 if ! command -v git >/dev/null 2>&1; then
     echo "Git not installed... bailing"
     exit 255;
@@ -9,6 +12,14 @@ fi
 [ -r "$HOME/.env-local" ] && . "$HOME/.env-local"
 
 exec 9>&1 1>/dev/null
+
+# On linux, force LF line endings: leave checkouts alone, normalize any CRLF
+# that sneaks in on commit. Combined with core.safecrlf below, lossy
+# conversions warn instead of silently mangling files.
+if [ "$OSENV" = "linux" ]; then
+    git config --global --get core.autocrlf || git config --global core.autocrlf "input"
+fi
+
 [ -z "${GIT_USER_NAME:-}" ] || git config --global --get user.name || git config --global user.name "$GIT_USER_NAME"
 [ -z "${GIT_USER_EMAIL:-}" ] || git config --global --get user.email || git config --global user.email "$GIT_USER_EMAIL"
 [ -z "${GIT_SIGNINGKEY:-}" ] || git config --global --get user.signingkey || git config --global user.signingkey "$GIT_SIGNINGKEY"
