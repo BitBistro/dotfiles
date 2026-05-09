@@ -1,6 +1,6 @@
 [user]
     signingkey = REDACTED_GPG_KEY
-    email = REDACTED_EMAIL
+    email = mike@bitbistro.org
 	name = Mike Perry
 [url "ssh://REDACTED_DOMAIN/"]
     insteadOf = https://REDACTED_DOMAIN/
@@ -13,9 +13,9 @@
 [core]
 	pager = /usr/bin/less -FRiX
 	editor = vim
-	excludesFile = /Users/MPerry/.gitignore
+	excludesFile = ~/.gitignore
 [branch "master"]
-	merge = refs/head/main
+	merge = refs/heads/main
 [init]
 	defaultBranch = main
 [push]
@@ -24,7 +24,6 @@
 [pull]
 	rebase = false
 [url "REDACTED_DOMAIN:"]
-	insteadOf = https://REDACTED_DOMAIN/
 	insteadOf = https://REDACTED_DOMAIN/
 [alias]
 	pick = cherry-pick

@@ -72,7 +72,7 @@ if has("nvim")
 endif
 
 " Mouse behavior, selection, and clipboard
-if has("xterm")
+if has("xterm") && !has("nvim")
     behave xterm
 endif
 if has("mouse")
@@ -178,11 +178,14 @@ endif
 " Font, colorschemes, and highlights
 if $_HAS_COLORS > 0
     set t_Co=256
-    set termguicolors
     set background=dark
 
-    "set t_AB=^[[48;5;%dm
-    "set t_AF=^[[38;5;%dm
+    " Only enable 24-bit color when the terminal advertises it. Without this
+    " guard, termguicolors on a 256-color terminal renders gui-only schemes
+    " (like nord) with wrong colors.
+    if has("gui_running") || has("nvim") || $COLORTERM =~? '^\(truecolor\|24bit\)$'
+        set termguicolors
+    endif
 
     " Show whitespace
     " MUST be inserted BEFORE the colorscheme command
@@ -199,19 +202,14 @@ if $_HAS_COLORS > 0
     endif
 
     let g:is_posix = 1
-    " set t_Co=16
-
-    " color pablo
-
     let do_syntax_sel_menu = 1
     set colorcolumn=80,120
     syntax on
-    try
-        " colorscheme wombat256mod
-        colorscheme nord
-    catch
-        colorscheme pablo
-    endtry
+
+    " pablo is the unconditional fallback; nord overrides it if available
+    silent! colorscheme pablo
+    silent! colorscheme nord
+
     highlight ColorColumn ctermbg=236 cterm=none guibg=#2c2c2c gui=none
     autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 endif

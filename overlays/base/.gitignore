@@ -6,3 +6,5 @@
 .idea-old
 .vscode
 .vscode/*
+.claude
+.claude/*

@@ -1,4 +1,4 @@
-if [ ! /usr/bin/git ]; then
+if ! command -v git >/dev/null 2>&1; then
     echo "Git not installed... bailing"
     exit 255;
 fi
@@ -10,7 +10,7 @@ git config --global --get gpg.program || git config --global gpg.program "gpg"
 git config --global --get diff.tool || git config --global diff.tool "vimdiff"
 git config --global --get core.safecrlf || git config --global core.safecrlf "true"
 git config --global --get core.pager || git config --global core.pager "$(command -v less) -FRiX"
-git config --global --get core.excludesFiles || git config --global core.excludesFiles "$HOME/.gitignore"
+git config --global --get core.excludesFile || git config --global core.excludesFile "$HOME/.gitignore"
 git config --global --get apply.whitespace || git config --global apply.whitespace "trailing-space,space-before-tab,blank-at-eol,blank-at-eof"
 git config --global --get alias.pick || git config --global alias.pick "cherry-pick"
 git config --global --get alias.orphans || git config --global alias.orphans "!git fetch -p; git remote prune origin; git checkout -d; git branch -vv --color=never | sed -nre \"s/^([[:space:]]+)([^[:space:]]+)[[:space:]].*\\[origin[^:]+: gone\\].*/\\2/p\" || echo none >&2"

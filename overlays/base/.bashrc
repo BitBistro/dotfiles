@@ -2,8 +2,9 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
-# Always make sure this is executed if available
-if [ -n "$BASH_ENV" ]; then . "$BASH_ENV" || true ; fi
+# Make sure .env is loaded for interactive non-login shells (login shells get
+# it via .profile; non-interactive bash gets it via $BASH_ENV automatically).
+if [ -n "$BASH_ENV" ] && [ -r "$BASH_ENV" ]; then . "$BASH_ENV" || true ; fi
 
 # If not running interactively, don't do anything
 case $- in
@@ -11,10 +12,13 @@ case $- in
       *) return;;
 esac
 
+# Interactive-only overrides
+if [ -r "${HOME}/.env-local" ]; then . "${HOME}/.env-local" || true ; fi
+
 # If setting term to xterm when it isn't, this will fix line drawing
 # commented out for now, because the term should be set properly
-if [ -n $SOMMELIER_VERSION ]; then
-    if echo $LANG | command grep -qi utf8; then
+if [ -n "$SOMMELIER_VERSION" ]; then
+    if echo "$LANG" | command grep -qi utf8; then
         export NCURSES_NO_UTF8_ACS=1
     fi
 fi
@@ -44,22 +48,19 @@ fi
 PS1='$ '
 
 addPATH () {
-    if [ -d "$1" ]; then
-        if echo "${PATH}" | command egrep -vq "(^|:)$1($|:)" ; then
-            PATH="$1:$PATH"
-        fi
-    fi
+    [ -d "$1" ] || return 0
+    case ":${PATH}:" in
+        *":$1:"*) ;;
+        *) PATH="$1:$PATH" ;;
+    esac
 }
 
 addCDPATH () {
-    if [ -d "$1" ]; then
-        if echo "${CDPATH}" | command egrep -vq "(^|:)$1($|:)" ; then
-            if [ -z "$CDPATH" ]; then
-                CDPATH="./"
-            fi
-            CDPATH="$CDPATH:$1"
-        fi
-    fi
+    [ -d "$1" ] || return 0
+    case ":${CDPATH}:" in
+        *":$1:"*) ;;
+        *) CDPATH="${CDPATH:-./}:$1" ;;
+    esac
 }
 
 goto() {
@@ -210,12 +211,10 @@ if [ "$color_prompt" = yes ]; then
             fi
         }
 
-        if [[ ! "$PROMPT_COMMAND" =~ "find_git_branch" ]]; then
-            if [ -n "$HAS_BREW" ]; then
-                PROMPT_COMMAND="/usr/bin/git --version &>/dev/null & disown; PROMPT_COMMAND=\"find_git_branch; $PROMPT_COMMAND\""
-            else
-                PROMPT_COMMAND="find_git_branch; $PROMPT_COMMAND"
-            fi
+        if [[ "${PROMPT_COMMAND[*]}" != *find_git_branch* ]]; then
+            # On brew, warm git's caches once at shell start so the first prompt isn't slow
+            [ -n "$HAS_BREW" ] && /usr/bin/git --version &>/dev/null & disown
+            PROMPT_COMMAND=(find_git_branch "${PROMPT_COMMAND[@]}")
         fi
     fi
 

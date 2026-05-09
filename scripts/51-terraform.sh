@@ -4,6 +4,10 @@ BASEDIR="$1"
 OSENV="$2"
 
 if [ "$OSENV" = "linux" ]; then
+    if command -v terraform >/dev/null 2>&1; then
+        exit 0
+    fi
+
     curl -fsSL https://apt.releases.hashicorp.com/gpg | \
         gpg --dearmor | \
         sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
