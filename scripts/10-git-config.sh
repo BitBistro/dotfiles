@@ -6,10 +6,9 @@ if ! command -v git >/dev/null 2>&1; then
     exit 255;
 fi
 
-# Pull machine-specific secrets/overrides (e.g. GIT_SIGNINGKEY) from ~/.env-local
-# if present. .env-local is created by 00-init.sh as an empty file; users add
-# any of the GIT_* variables consumed below.
-[ -r "$HOME/.env-local" ] && . "$HOME/.env-local"
+# GIT_USER_NAME / GIT_USER_EMAIL / GIT_SIGNINGKEY are expected to already be
+# exported in the calling shell (typically via ~/.bashrc sourcing ~/.env-local).
+# If they're unset the corresponding `git config` lines below are no-ops.
 
 exec 9>&1 1>/dev/null
 

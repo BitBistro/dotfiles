@@ -16,6 +16,41 @@ Pass `-y` to skip all confirmation prompts (non-interactive/CI use):
 bin/run-scripts.sh -y
 ```
 
+The pipeline reads machine-specific values (git identity, GPG key, backup
+repo) from environment variables. On the very first run those don't exist
+yet — see [Machine identity](#machine-identity) below for the bootstrap
+flow.
+
+## Machine identity
+
+Machine-specific values live in `~/.env-local` and are pulled into the
+environment by `~/.bashrc` for every interactive shell. The pipeline
+expects them already exported in the shell that invokes
+`bin/run-scripts.sh`; nothing in `scripts/` re-sources the file.
+
+A typical `~/.env-local`:
+
+```sh
+export GIT_USER_NAME="Jane Doe"
+export GIT_USER_EMAIL="jane@example.com"
+export GIT_SIGNINGKEY="4F3A8B1D2C9E5F70A6B8D3E1C4F9A2B5D8E1C7F3"
+export RESTIC_REPOSITORY="/home/jane/OneDrive/Backup/WSL"
+```
+
+The `GIT_*` vars are consumed by `scripts/10-git-config.sh` to write your
+global gitconfig. `RESTIC_REPOSITORY` is read at runtime by the `backup`
+tool installed under `~/.local/bin/`.
+
+**First run:** the file doesn't exist yet, so `scripts/01-init-env-local.sh`
+prompts for the `GIT_*` values mid-pipeline and appends them. Those vars
+won't be visible to `10-git-config.sh` in the same run — start a new shell
+(or `. ~/.env-local`) and re-run `bin/run-scripts.sh` so the git settings
+actually apply. Add `RESTIC_REPOSITORY` by hand.
+
+To update identity variables later, edit `~/.env-local` directly (or delete
+the relevant `export` lines and re-run the pipeline) and start a fresh
+shell.
+
 ## Repo layout
 
 | Path | Purpose |
@@ -44,30 +79,6 @@ halts the pipeline.
 | `20-29` | OS tweaks — remove snap, fix macOS fonts |
 | `50-59` | Copy dotfiles from `overlays/` → `$HOME`; install tools (Go, Helm, Terraform) |
 | `99` | Cleanup and permission fixes |
-
-### Machine identity
-
-`scripts/01-init-env-local.sh` prompts for git identity and GPG key on first
-run and appends them to `~/.env-local`. This file is sourced by:
-
-- `~/.bashrc` (interactive shells only)
-- `scripts/10-git-config.sh` (at install time)
-
-A typical `~/.env-local`:
-
-```sh
-export GIT_USER_NAME="Jane Doe"
-export GIT_USER_EMAIL="jane@example.com"
-export GIT_SIGNINGKEY="4F3A8B1D2C9E5F70A6B8D3E1C4F9A2B5D8E1C7F3"
-export RESTIC_REPOSITORY="/home/jane/OneDrive/Backup/WSL"
-```
-
-The `GIT_*` vars are written by `scripts/01-init-env-local.sh` and consumed
-by `scripts/10-git-config.sh`. `RESTIC_REPOSITORY` is read at runtime by the
-`backup` tool installed under `~/.local/bin/` — add it by hand.
-
-To update identity variables, edit `~/.env-local` directly or delete the
-relevant `export` lines and re-run `bin/run-scripts.sh`.
 
 ## Dotfile overlays
 
