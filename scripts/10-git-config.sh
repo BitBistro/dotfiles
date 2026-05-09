@@ -9,8 +9,8 @@ fi
 [ -r "$HOME/.env-local" ] && . "$HOME/.env-local"
 
 exec 9>&1 1>/dev/null
-git config --global --get user.name || git config --global user.name "${GIT_USER_NAME:-Mike Perry}"
-git config --global --get user.email || git config --global user.email "${GIT_USER_EMAIL:-mike@bitbistro.org}"
+[ -z "${GIT_USER_NAME:-}" ] || git config --global --get user.name || git config --global user.name "$GIT_USER_NAME"
+[ -z "${GIT_USER_EMAIL:-}" ] || git config --global --get user.email || git config --global user.email "$GIT_USER_EMAIL"
 [ -z "${GIT_SIGNINGKEY:-}" ] || git config --global --get user.signingkey || git config --global user.signingkey "$GIT_SIGNINGKEY"
 git config --global --get commit.gpgsign || git config --global commit.gpgsign "true"
 git config --global --get gpg.program || git config --global gpg.program "gpg"
