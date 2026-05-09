@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=browser
+Exec=@@BIN_DIR@@/browser %u
+MimeType=x-scheme-handler/about;x-scheme-handler/https;x-scheme-handler/http;text/html;

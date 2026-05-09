@@ -1,0 +1,56 @@
+#!/bin/bash
+
+set -e
+
+# Define Windows application paths
+export PATH="/mnt/c/Windows:/mnt/c/Windows/System32:$PATH"
+
+get_hostname() {
+    if [ -n "$HOSTNAME" ]; then
+        printf '%s\n' "$HOSTNAME"
+    else
+        hostname
+    fi
+}
+
+decode_file_url_to_path() {
+    local target="$1"
+    local host
+
+    host="$(get_hostname)"
+    target="${target#file://localhost}"
+    target="${target#file://"$host"}"
+    target="${target#file://}"
+    target="${target%%#*}"
+    target="${target%%\?*}"
+
+    if [[ "$target" != /* ]]; then
+        printf '%s\n' "$target"
+        return
+    fi
+
+    /usr/bin/printf '%b\n' "${target//%/\\x}"
+}
+
+open_target() {
+    local target="$1"
+    local was_file_url=""
+
+    case "$target" in
+        file://*)
+            target="$(decode_file_url_to_path "$target")"
+            was_file_url="true"
+            ;;
+    esac
+
+    if [ -e "$target" ]; then
+        explorer.exe "$(wslpath -aw "$target")"
+    elif [ -n "$was_file_url" ]; then
+        printf 'browser: file URL did not resolve to an existing path: %s\n' "$1" >&2
+        return 1
+    else
+        rundll32.exe url.dll,FileProtocolHandler "$target"
+    fi
+}
+
+open_target "$1"

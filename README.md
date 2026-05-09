@@ -29,6 +29,7 @@ halts the pipeline.
 |-------|---------|
 | `00-09` | Init — create dirs, seed empty config files |
 | `01` | Prompt for machine identity (`~/.env-local`) |
+| `09` | Install user-local tools (`backup`, `pinentry`; `browser` + desktop entry on WSL) |
 | `10-19` | Core config — git, SSH, GPG |
 | `20-29` | OS tweaks — remove snap, fix macOS fonts |
 | `50-59` | Copy dotfiles from `overlays/` → `$HOME`; install tools (Go, Helm, Terraform) |

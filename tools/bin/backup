@@ -1,0 +1,297 @@
+#!/bin/bash
+set -e
+
+READLINK="$(command -v greadlink readlink | head -n1)"
+if [ -z "$READLINK" ]; then
+    echo "The 'readlink' command cannot be found. This can be installed from GNU coreutils"
+    exit 1
+fi
+THIS=$(${READLINK} -f "$0")
+if [ -z "${THIS}" ]; then
+    echo "Please install GNU Readlink from coreutils"
+    exit 2
+fi
+
+HOST_NAME="${HOSTNAME:-$(hostname)}"
+BACKUP_PASSWORD_FILE_DEFAULT="${XDG_CONFIG_HOME:-$HOME/.config}/restic-backup-${HOST_NAME}.gpg"
+
+export BACKUP_PASSWORD_FILE="${BACKUP_PASSWORD_FILE:-$BACKUP_PASSWORD_FILE_DEFAULT}"
+export RESTIC_PASSWORD_COMMAND="\"${THIS}\" -p"
+
+get_exclude_list() {
+    awk '/XX_EXCLUDE_LIST$/,/^XX_EXCLUDE_LIST$/{if($0!~/XX_EXCLUDE_LIST/)print}' "${THIS}"
+}
+
+get_password() {
+    if [ ! -r "$BACKUP_PASSWORD_FILE" ]; then
+        echo "Password file not found or unreadable: $BACKUP_PASSWORD_FILE" >&2
+        echo "Set BACKUP_PASSWORD_FILE or create the default GPG file first." >&2
+        exit 1
+    fi
+
+    gpg --decrypt -q "$BACKUP_PASSWORD_FILE" || {
+        echo "gpg decryption failed for $BACKUP_PASSWORD_FILE" >&2
+        exit 1
+    }
+}
+
+require_repository() {
+    if [ -z "$RESTIC_REPOSITORY" ]; then
+        echo "RESTIC_REPOSITORY is not set." >&2
+        echo "Set RESTIC_REPOSITORY to your restic repository path before running backup." >&2
+        exit 1
+    fi
+}
+
+function usage() {
+    exec 1>&2
+    if [ -n "$1" ]; then
+        echo "$1"
+    fi
+    echo "Usage: $0 [flags] [PATH]"
+    echo
+    echo "Common Options:"
+    echo " -h this [h]elp"
+    echo " -q be [q]uiet"
+    echo " -v be [v]erbose"
+    echo ""
+    echo "Actions:"
+    echo " -c set pruning policy and [c]lean"
+    echo " -e print [e]nv suitable for bash eval"
+    echo " -p get [p]assword secret from command"
+    echo " -C create repo"
+    echo " -R <SNAPSHOT_ID> rewrite snapshot (use with backup selection)"
+    echo " -o <SNAPSHOT_ID> [PATH] list snapshot contents ([o]utput to stdout); PATH optional"
+    echo ""
+    echo "Restore (use with -r):"
+    echo " -r <SNAPSHOT_ID> [r]estore; use -r list to see snapshot IDs"
+    echo " -t <TARGET> restore [t]arget directory (default: temp dir)"
+    echo " -l <PATH> restore only files under this [l]ocation (path in snapshot)"
+    echo " -i <GLOB> [i]nclude only files matching pattern"
+    echo " -x <GLOB> e[x]clude files matching pattern"
+    echo ""
+    echo "Backup Selections (run backup of):"
+    echo " -E /[E]tc"
+    echo " -F [f]ull (/ + -H + -E + -L + -Q)"
+    echo " -H [H]ome (\$HOME)"
+    echo " -L /usr/[L]ocal"
+    echo " -Q [Q]uick (\$HOME/.codex + \$HOME/.claude)"
+    echo ""
+    echo "Other:"
+    echo " -f <SNAPSHOT_ID> forget snapshot"
+    echo ""
+    exit 1
+}
+
+ACTION=""
+SNAPSHOT=""
+FOUND_ANY=""
+FORGET_SNAPSHOT=""
+RESTORE_IN=""
+RESTORE_PATH=""
+RESTORE_TARGET=""
+RESTORE_EX=""
+RESTORE_SNAPSHOT="latest"
+LS_SNAPSHOT=""
+while builtin getopts ":hcCepqvHEFLQr:i:l:t:x:f:R:o:" OPT; do
+    FOUND_ANY="true"
+    case ${OPT} in
+        h)
+            usage
+            ;;
+        c)
+            ACTION="CLEAN"
+            ;;
+        e)
+            ACTION="ENV"
+            ;;
+        f)
+            ACTION="FORGET"
+            FORGET_SNAPSHOT="$OPTARG"
+            ;;
+        i)
+            RESTORE_IN="$OPTARG"
+            ;;
+        l)
+            RESTORE_PATH="$OPTARG"
+            ;;
+        t)
+            RESTORE_TARGET="$OPTARG"
+            ;;
+        x)
+            RESTORE_EX="$OPTARG"
+            ;;
+        p)
+            ACTION="GETPW"
+            ;;
+        q)
+            QUIET="true"
+            ;;
+        r)
+            ACTION="RESTORE"
+            RESTORE_SNAPSHOT="$OPTARG"
+            ;;
+        v)
+            set -vx
+            ;;
+        C)
+            ACTION="CREATE"
+            ;;
+        E)
+            SNAPSHOT="ETC"
+            ;;
+        F)
+            SNAPSHOT="FULL"
+            ;;
+        H)
+            SNAPSHOT="HOME"
+            ;;
+        L)
+            SNAPSHOT="LOCAL"
+            ;;
+        Q)
+            SNAPSHOT="QUICK"
+            ;;
+        R)
+            ACTION="REWRITE"
+            REWRITE_SNAPSHOT="$OPTARG"
+            ;;
+        o)
+            ACTION="LS"
+            LS_SNAPSHOT="$OPTARG"
+            ;;
+        *)
+            usage "Invalid option: -${OPT}"
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+
+if [ -z "$FOUND_ANY" ]; then
+    usage "No options selected"
+fi
+
+if [ "$QUIET" == "true" ]; then
+    exec 1>/dev/null
+    VERBOSE=""
+else
+    VERBOSE="--verbose"
+fi
+
+if [ -z "$ACTION" ]; then
+    ACTION="BACKUP"
+fi
+
+case $ACTION in
+    CREATE)
+        require_repository
+        restic $VERBOSE init
+        ;;
+    BACKUP)
+        require_repository
+        if [ -z "$SNAPSHOT" ]; then
+            usage "No snapshot selected"
+        fi
+        if [ -z "$QUIET" ]; then
+            restic snapshots
+        fi
+        if [ "$SNAPSHOT" == "QUICK" ]; then
+            restic $VERBOSE backup "$HOME/.codex" "$HOME/.claude" --host localhost --one-file-system --exclude-file=<(get_exclude_list) --tag "quick" --tag "codex" --tag "claude"
+        elif [ "$SNAPSHOT" == "ETC" ]; then
+            restic $VERBOSE backup "/etc" --host localhost --one-file-system --exclude-file=<(get_exclude_list) --tag "etc"
+        elif [ "$SNAPSHOT" == "HOME" ]; then
+            restic $VERBOSE backup "$HOME" --host localhost --one-file-system --exclude-file=<(get_exclude_list) --tag "home"
+        elif [ "$SNAPSHOT" == "LOCAL" ]; then
+            restic $VERBOSE backup "/usr/local" --host localhost --one-file-system --exclude-file=<(get_exclude_list) --tag "local"
+        elif [ "$SNAPSHOT" == "FULL" ]; then
+            restic $VERBOSE backup "/" "$HOME" "/etc" "/usr/local" "$HOME/.codex" "$HOME/.claude" --host localhost --one-file-system --exclude-file=<(get_exclude_list) --tag "home" --tag "local" --tag "etc" --tag "quick" --tag "codex" --tag "claude" --tag "full"
+        fi
+        ;;
+    CLEAN)
+        require_repository
+        restic unlock
+        restic cache --max-age=14
+        restic cache --cleanup
+        restic forget --prune --keep-last 14 --keep-hourly 12 --keep-weekly 4 --keep-monthly 6 --keep-yearly 3
+        ;;
+    ENV)
+        env | grep -E '^(RESTIC_|BACKUP_)' | while IFS= read -r line; do
+            name="${line%%=*}"
+            value="${line#*=}"
+            case "$value" in *\"*|*\\*) ;; *)
+                printf 'export %s="%s"\n' "$name" "$value"
+            esac
+        done
+        ;;
+    FORGET)
+        require_repository
+        if [ -z "$FORGET_SNAPSHOT" ]; then
+            usage "Option -f requires a snapshot ID"
+        fi
+        restic forget "$FORGET_SNAPSHOT"
+        ;;
+    REWRITE)
+        require_repository
+        if [ -z "$REWRITE_SNAPSHOT" ]; then
+            usage "Option -R requires a snapshot ID"
+        fi
+        restic rewrite --exclude-file=<(get_exclude_list) "$REWRITE_SNAPSHOT"
+        ;;
+    GETPW)
+        get_password
+        ;;
+    LS)
+        require_repository
+        if [ -z "$LS_SNAPSHOT" ]; then
+            usage "Option -o requires a snapshot ID (use restic snapshots or -r list)"
+        fi
+        if [ -n "$1" ]; then
+            restic $VERBOSE ls "$LS_SNAPSHOT" "$1"
+        else
+            restic $VERBOSE ls "$LS_SNAPSHOT"
+        fi
+        ;;
+    RESTORE)
+        require_repository
+        if [ "$RESTORE_SNAPSHOT" == "list" ]; then
+            restic snapshots
+            exit
+        fi
+
+        if [ -z "$RESTORE_TARGET" ]; then
+            RESTORE_TARGET="$(mktemp -d)"
+        fi
+
+        RESTORE_OPTS=("$RESTORE_SNAPSHOT" --host localhost --target "$RESTORE_TARGET")
+        [ -n "$RESTORE_PATH" ] && RESTORE_OPTS+=(--path "$RESTORE_PATH")
+        [ -n "$RESTORE_IN" ] && RESTORE_OPTS+=(--include "$RESTORE_IN")
+        [ -n "$RESTORE_EX" ] && RESTORE_OPTS+=(--exclude "$RESTORE_EX")
+
+        echo "Restoring to $RESTORE_TARGET"
+        set -x
+        restic $VERBOSE restore "${RESTORE_OPTS[@]}"
+        ;;
+esac
+
+:<<XX_EXCLUDE_LIST
+/home/*/go/pkg/mod
+/home/*/OneDrive
+/home/*/VirtualDisks
+/home/*/tmp
+/home/*/.Trash
+/**/*cache*
+/**/.cache*
+/**/*Cache*
+/**/Downloads
+/**/*OneDrive*
+/**/*Temp*
+/**/tmp
+/**/Tmp
+/usr/src
+/var/cache
+/var/tmp
+/var/lib/docker
+/mnt/c/Users/*/AppData/Local/Google
+/mnt/c/Users/*/AppData/Local/Microsoft
+/mnt/c/**/*log*
+XX_EXCLUDE_LIST
