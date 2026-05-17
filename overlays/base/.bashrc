@@ -12,9 +12,6 @@ case $- in
       *) return;;
 esac
 
-# Interactive-only overrides
-if [ -r "${HOME}/.env-local" ]; then . "${HOME}/.env-local" || true ; fi
-
 # If setting term to xterm when it isn't, this will fix line drawing
 # commented out for now, because the term should be set properly
 if [ -n "$SOMMELIER_VERSION" ]; then
@@ -47,20 +44,11 @@ if command -v kubectl &>/dev/null; then
 fi
 PS1='$ '
 
-addPATH () {
-    [ -d "$1" ] || return 0
-    case ":${PATH}:" in
-        *":$1:"*) ;;
-        *) PATH="$1:$PATH" ;;
-    esac
-}
-
 addCDPATH () {
     [ -d "$1" ] || return 0
-    case ":${CDPATH}:" in
-        *":$1:"*) ;;
-        *) CDPATH="${CDPATH:-./}:$1" ;;
-    esac
+    if echo "${CDPATH}" | command grep -Evq "(^|:)$1($|:)" ; then
+        CDPATH="${CDPATH:-./}:$1"
+    fi
 }
 
 goto() {
@@ -76,6 +64,11 @@ goto() {
     fi
 }
 
+# For device specific settings
+if [ -r "${HOME}/.env-local" ]; then
+    . "${HOME}/.env-local" || true
+fi
+
 if [ "`id -u`" -eq 0 ]; then
     PS1='# '
     mesg n || true
@@ -85,10 +78,6 @@ else
     addPATH /usr/games
     # For Darwin
     addPATH /usr/local/opt/coreutils/libexec/gnubin
-    # set PATH so it includes user's private bin if it exists
-    addPATH "${HOME}/bin"
-    addPATH "${HOME}/.local/bin"
-    addPATH "/mnt/c/Windows/System32"
     addCDPATH "${HOME}/..."
 fi
 
@@ -287,3 +276,4 @@ if command -v dircolors &>/dev/null; then
     alias grep='grep --color=auto'
     alias grpe='grep --color=auto'
 fi
+
