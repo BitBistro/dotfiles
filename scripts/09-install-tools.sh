@@ -70,14 +70,23 @@ echo "installed $BIN_DIR/browser (start, open symlinks)"
 
 template="$TOOLS_SRC/share/applications/browser.desktop.in"
 desktop="$APP_DIR/browser.desktop"
-sed "s|@@BIN_DIR@@|$BIN_DIR|g" "$template" > "$desktop"
-echo "wrote $desktop"
+rendered=$(sed "s|@@BIN_DIR@@|$BIN_DIR|g" "$template")
+if [ ! -f "$desktop" ] || [ "$(cat "$desktop")" != "$rendered" ]; then
+    printf '%s\n' "$rendered" > "$desktop"
+    echo "wrote $desktop"
+    desktop_changed=1
+else
+    desktop_changed=0
+fi
 
-if command -v update-desktop-database >/dev/null 2>&1; then
+if [ "$desktop_changed" = 1 ] && command -v update-desktop-database >/dev/null 2>&1; then
     update-desktop-database "$APP_DIR" >/dev/null 2>&1 || true
 fi
 
-DE=generic BROWSER="" xdg-settings set default-web-browser browser.desktop || {
-    echo "xdg-settings: failed to set default browser" >&2
-    exit 255
-}
+current_browser=$(xdg-settings get default-web-browser 2>/dev/null || true)
+if [ "$current_browser" != "browser.desktop" ]; then
+    DE=generic BROWSER="" xdg-settings set default-web-browser browser.desktop || {
+        echo "xdg-settings: failed to set default browser" >&2
+        exit 255
+    }
+fi
