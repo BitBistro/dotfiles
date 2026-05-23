@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-if [ -n "${DISPLAY}${WAYLAND_DISPLAY}" ] && [ -x /usr/bin/pinentry-gtk-2 ]; then
-    exec /usr/bin/pinentry-gtk-2 "$@"
+if [ -n "${DISPLAY}${WAYLAND_DISPLAY}" ] && [ -x /usr/bin/pinentry-fltk ]; then
+    exec /usr/bin/pinentry-fltk "$@"
 fi
 
 if [ -x /usr/bin/pinentry-tty ]; then
@@ -10,5 +10,5 @@ if [ -x /usr/bin/pinentry-tty ]; then
 fi
 
 printf 'pinentry: no supported pinentry backend found\n' >&2
-printf 'pinentry: install pinentry-gtk2 or pinentry-tty\n' >&2
+printf 'pinentry: install pinentry-fltk or pinentry-tty\n' >&2
 exit 127

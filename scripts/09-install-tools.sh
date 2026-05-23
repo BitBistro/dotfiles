@@ -44,7 +44,7 @@ if ! command -v greadlink >/dev/null 2>&1 && ! command -v readlink >/dev/null 2>
 fi
 
 # --- pinentry deps (always) ---
-require_file_executable /usr/bin/pinentry-gtk-2 "install pinentry-gtk2"
+require_file_executable /usr/bin/pinentry-fltk  "install pinentry-fltk"
 require_file_executable /usr/bin/pinentry-tty   "install pinentry-tty"
 
 install -m 0755 "$TOOLS_SRC/bin/backup"   "$BIN_DIR/backup"

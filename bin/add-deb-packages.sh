@@ -25,7 +25,6 @@ apt-config dump | egrep 'APT::Install' | sed -re 's/1/0/g' > $TEMPFILE
 export APT_CONFIG="$TEMPFILE"
 
 apt update
-apt autoremove
 
 case $LEVEL in
     "base")
@@ -53,7 +52,7 @@ case $LEVEL in
             powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs neovim gdb \
 	    linux-doc info iw bison flex gnupg libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
-            fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils ripgrep git-filter-repo pinentry-gtk2 \
+            fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils ripgrep git-filter-repo pinentry-fltk \
             shellcheck
     ;;
     "thisbe")
@@ -79,5 +78,7 @@ case $LEVEL in
         echo "Not implemented" >&2
     exit 1
 esac
+
+apt autoremove
 
 exit 0
