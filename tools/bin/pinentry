@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-if [ -n "${DISPLAY}${WAYLAND_DISPLAY}" ] && [ -x /usr/bin/pinentry-fltk ]; then
+if [ -n "${DISPLAY}" ] && [ -x /usr/bin/pinentry-fltk ]; then
     exec /usr/bin/pinentry-fltk "$@"
 fi
 
