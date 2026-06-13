@@ -20,7 +20,7 @@ apt update
 
 case "$LEVEL" in
     "base")
-        apt upgrade
+        apt -y upgrade
         apt -y install aptitude aptitude-doc-en
         aptitude -y install "?and(?architecture(native),?or(~prequired))" bash-completion vim-nox git rsync pinentry-tty \
                 pinentry-curses_ gpg-agent
@@ -46,15 +46,6 @@ case "$LEVEL" in
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
             fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils ripgrep git-filter-repo pinentry-fltk \
             shellcheck
-    ;;
-    "thisbe")
-        aptitude install -t bullseye-backports \
-            '?and(~n^firmware,!~nnvidia,!microbit)' intel-gpu-tools intel-media-va-driver-non-free intel-hdcp_
-    ;;
-    "desktop")
-        aptitude -t bullseye-backports -o APT::Install-Recommends=true -o APT::Get::AutomaticRemove=true -o Acquire::Retries=3 \
-            install task-desktop task-xfce-desktop task-ssh-server xdg-desktop-portal-gtk_ xdg-desktop-portal_ plymouth-label_ \
-            libegl1-mesa
     ;;
     "cleanup")
         dpkg -l | awk 'c&&!/ii/{print $2}/^\+/{c=1}' | xargs aptitude purge -y
