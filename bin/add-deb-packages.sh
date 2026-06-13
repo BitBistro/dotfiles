@@ -14,6 +14,7 @@ TEMPFILE="$(mktemp)"
 trap 'rm -f -- "$TEMPFILE"' EXIT
 apt-config dump | grep -E 'APT::Install' | sed -re 's/1/0/g' > "$TEMPFILE"
 export APT_CONFIG="$TEMPFILE"
+export DEBIAN_FRONTEND=noninteractive
 
 apt update
 
