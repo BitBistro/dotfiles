@@ -1,18 +1,9 @@
 #!/bin/bash
 set -e
-BASEDIR="$(readlink -f `dirname  $0`/..)";
-#. $BASEDIR/overlay/.env
+LEVEL="${1:-base}"
 
-if [ -n "$1" ]; then
-    LEVEL="$1"
-fi
-
-if [ -z "$LEVEL" ]; then
-    LEVEL="base"
-fi
-
-if [ `id -u` -ne '0' ]; then
-    if [ -z $NO_RECURSE ]; then
+if [ "$(id -u)" -ne '0' ]; then
+    if [ -z "$NO_RECURSE" ]; then
         exec sudo NO_RECURSE=1 /bin/bash -e "$0" "$LEVEL"
     else
         echo "This must be run as root" >&2 && false
@@ -20,13 +11,13 @@ if [ `id -u` -ne '0' ]; then
 fi
 
 TEMPFILE="$(mktemp)"
-trap '/bin/rm -f -- "$TEMPFILE"' EXIT
-apt-config dump | egrep 'APT::Install' | sed -re 's/1/0/g' > $TEMPFILE
+trap 'rm -f -- "$TEMPFILE"' EXIT
+apt-config dump | grep -E 'APT::Install' | sed -re 's/1/0/g' > "$TEMPFILE"
 export APT_CONFIG="$TEMPFILE"
 
 apt update
 
-case $LEVEL in
+case "$LEVEL" in
     "base")
         apt upgrade
         apt -y install aptitude aptitude-doc-en
@@ -50,14 +41,14 @@ case $LEVEL in
             gdisk gnupg hdparm htop i2c-tools irqbalance jq lintian shared-mime-info xauth linux-headers-amd64 \
             lm-sensors localepurge manpages-dev plocate mutt net-tools nocache nvme-cli parted patch patchutils pbuilder pigz \
             powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs neovim gdb \
-	    linux-doc info iw bison flex gnupg libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
+            linux-doc info iw bison flex gnupg libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
             fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils ripgrep git-filter-repo pinentry-fltk \
             shellcheck
     ;;
     "thisbe")
-    	aptitude install -t bullseye-backports \
-	    '?and(~n^firmware,!~nnvidia,!microbit)' intel-gpu-tools intel-media-va-driver-non-free intel-hdcp_
+        aptitude install -t bullseye-backports \
+            '?and(~n^firmware,!~nnvidia,!microbit)' intel-gpu-tools intel-media-va-driver-non-free intel-hdcp_
     ;;
     "desktop")
         aptitude -t bullseye-backports -o APT::Install-Recommends=true -o APT::Get::AutomaticRemove=true -o Acquire::Retries=3 \
@@ -68,8 +59,8 @@ case $LEVEL in
         dpkg -l | awk 'c&&!/ii/{print $2}/^\+/{c=1}' | xargs aptitude purge -y
     ;;
     "zfs")
-    	aptitude install \
-	    linux-headers-$(uname -r) zfs-dkms zfs-initramfs
+        aptitude install \
+            "linux-headers-$(uname -r)" zfs-dkms zfs-initramfs
     ;;
     "kvm") 
         aptitude install qemu-kvm
