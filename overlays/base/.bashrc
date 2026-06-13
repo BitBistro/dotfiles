@@ -277,3 +277,6 @@ if command -v dircolors &>/dev/null; then
     alias grpe='grep --color=auto'
 fi
 
+# Hardened local vault environments
+alias frog='~/.config/frogmouth-env/.venv/bin/frogmouth'
+alias mcp-proxy='~/.config/mcp-proxy-env/.venv/bin/mcp-proxy'

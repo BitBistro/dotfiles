@@ -12,9 +12,9 @@ if ! command -v uv >/dev/null 2>&1; then
     exit 255
 fi
 
-TARGET_DIR="$HOME/.config/frogmouth-env"
+TARGET_DIR="$HOME/.config/mcp-proxy-env"
 TARGET_TOML="$TARGET_DIR/pyproject.toml"
-TARGET_PKG="frogmouth"
+TARGET_PKG="mcp-proxy"
 REQ_FILE="$TARGET_DIR/requirements.txt"
 
 # EARLY EXIT: If the hardened binary already exists, skip the entire pipeline
@@ -40,7 +40,7 @@ override-dependencies = [
 EOF
 fi
 
-# RESOLVE & SYNC: uv add will now factor in the h11 override immediately
+# RESOLVE & SYNC: uv add will now factor in the override immediately
 uv add --project "$TARGET_TOML" "$TARGET_PKG" safety
 
 # EXPORT: Generate the static requirements artifact
