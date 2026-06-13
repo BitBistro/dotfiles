@@ -29,11 +29,11 @@ case "$LEVEL" in
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox rsync pinentry-tty gpg-agent patch zip unzip jq \
                 plocate pinentry-curses_ '?and(~n^plymouth_,?not(~v))' neovim restic curl openssl bsdutils ncal rfkill \
-                wpasupplicant w3m parted bc dc kmod btrfs-progs tcpdump wget wodim busybox-static pinentry-fltk pass
+                wpasupplicant w3m parted bc dc kmod btrfs-progs tcpdump wget wodim busybox-static pinentry-fltk pass dbus-user-session
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox rsync pinentry-tty gpg-agent patch zip unzip jq \
                 plocate neovim restic curl openssl bsdutils ncal rfkill wpasupplicant w3m parted bc dc kmod btrfs-progs \
-                tcpdump wget wodim busybox-static pinentry-fltk pass
+                tcpdump wget wodim busybox-static pinentry-fltk pass dbus-user-session
     ;;
     "extra")
         aptitude install \
