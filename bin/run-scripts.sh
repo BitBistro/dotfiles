@@ -1,17 +1,16 @@
 #!/bin/bash
 OSENV="linux"
-if [ "$(uname -s | tr A-Z a-z)" == "darwin" ]; then
+if [ "$(uname -s | tr '[:upper:]' '[:lower:]')" == "darwin" ]; then
     OSENV="darwin"
 fi
 
 FLAVOR="unknown"
 if command -v lsb_release &> /dev/null ; then
-    FLAVOR="$(tr A-Z a-z<<<`lsb_release -i -s`)"
+    FLAVOR="$(tr '[:upper:]' '[:lower:]' <<< "$(lsb_release -i -s)")"
 fi
 
-
 READLINK=$(command -v greadlink readlink | head -n1)
-BASEDIR="$($READLINK -f `dirname  $0`/..)";
+BASEDIR="$($READLINK -f "$(dirname "$0")/..")"
 
 usage() {
     cat <<END_OF_USAGE >&2
@@ -55,7 +54,7 @@ case "$1" in
         ;;
     *)
         yn=n
-        read -p "Process with setup [y/N]? " -n1 yn; echo
+        read -r -p "Process with setup [y/N]? " -n1 yn; echo
         if [ "$yn" == "y" ]; then
             run-now
         else
