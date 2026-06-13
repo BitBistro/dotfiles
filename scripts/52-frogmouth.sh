@@ -23,17 +23,18 @@ if [ ! -f "$TARGET_TOML" ]; then
     uv init --no-package "$TARGET_DIR"
 fi
 
-uv add --project "$TARGET_DIR" "$TARGET_PKG" safety
-uv export --project "$TARGET_DIR" --format requirements-txt --output-file "$REQ_FILE"
+uv add --project "$TARGET_TOML" "$TARGET_PKG" safety
+uv export --project "$TARGET_TOML" --format requirements-txt --output-file "$REQ_FILE"
 "$TARGET_DIR/.venv/bin/python" -m safety scan -r "$REQ_FILE" --full-report || true
 
 if ! grep -Fq '"h11==0.16.0"' "$TARGET_TOML"; then
-    if grep -Fxq '[tool.uv]' "$TARGET_TOML"; then
+    if grep -Fq '[tool.uv]' "$TARGET_TOML"; then
         echo "frogmouth: [tool.uv] already exists without h11 override" >&2
         exit 255
     fi
 
     cat << 'EOF' >> "$TARGET_TOML"
+
 [tool.uv]
 override-dependencies = [
   "h11==0.16.0"
@@ -41,7 +42,7 @@ override-dependencies = [
 EOF
 fi
 
-uv lock --project "$TARGET_DIR"
-uv sync --project "$TARGET_DIR"
-uv export --project "$TARGET_DIR" --format requirements-txt --output-file "$REQ_FILE"
+uv lock --project "$TARGET_TOML"
+uv sync --project "$TARGET_TOML"
+uv export --project "$TARGET_TOML" --format requirements-txt --output-file "$REQ_FILE"
 "$TARGET_DIR/.venv/bin/python" -m safety scan -r "$REQ_FILE" --full-report
