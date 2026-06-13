@@ -2,8 +2,6 @@
 set -euo pipefail
 BASEDIR="$1"
 OSENV="$2"
-OKCD="$(pwd)"
-trap 'cd "$OKCD"' EXIT
 
 if [ "$OSENV" != "linux" ] && [ "$OSENV" != "darwin" ]; then
     exit 0
@@ -44,14 +42,14 @@ if [ -z "$_VER" ] || [ -z "$_DL" ] || [ -z "$_EXPECTED" ] || [ "$_DIGEST" = "$_E
 fi
 
 tmpdir="$(mktemp -d)"
-trap 'cd "$OKCD"; [ -n "$tmpdir" ] && [ -d "$tmpdir" ] && rm -rf "$tmpdir"' EXIT
-cd "$tmpdir"
+trap '[ -n "$tmpdir" ] && [ -d "$tmpdir" ] && rm -rf "$tmpdir"' EXIT
+installer="$tmpdir/uv-installer.sh"
 
 echo "Installing uv $_VER"
 echo "Downloading $_DL"
-curl --proto '=https' --tlsv1.2 -fsSL "$_DL" -o uv-installer.sh || exit 255
+curl --proto '=https' --tlsv1.2 -fsSL "$_DL" -o "$installer" || exit 255
 
-_ACTUAL="$("${SHA256[@]}" uv-installer.sh | awk '{print $1}')"
+_ACTUAL="$("${SHA256[@]}" "$installer" | awk '{print $1}')"
 if [ "$_ACTUAL" != "$_EXPECTED" ]; then
     echo "uv-installer.sh checksum mismatch" >&2
     echo "expected: $_EXPECTED" >&2
@@ -59,4 +57,4 @@ if [ "$_ACTUAL" != "$_EXPECTED" ]; then
     exit 255
 fi
 
-sh uv-installer.sh
+sh "$installer"
