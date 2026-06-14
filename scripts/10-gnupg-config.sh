@@ -1,3 +1,4 @@
+#!/bin/bash
 RELOAD_AGENT=
 
 # Ensure .gnupg directory exists
@@ -57,7 +58,7 @@ if [ -n "$LC_CTYPE" ]; then
 fi
 
 # Use gpgconf for reloading (more reliable than gpg-connect-agent)
-if [ ! -z "$RELOAD_AGENT" ]; then
+if [ -n "$RELOAD_AGENT" ]; then
     gpgconf --reload gpg-agent 2>/dev/null || true
 fi
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -f "$HOME/.skip_copy_files" ]; then
   echo "skipping"
   exit 0
@@ -10,12 +11,12 @@ fi
 
 if [ "$WITH_FORCE" != "true" ]; then
      echo "The following files will be overwritten:"
-     rsync --info=COPY -IhncO -aCP "$1/overlays/base/" "$HOME" 2>/dev/null | egrep -v 'sending incremental file list|^.*/$'
+     rsync --info=COPY -IhncO -aCP "$1/overlays/base/" "$HOME" 2>/dev/null | grep -E -v 'sending incremental file list|^.*/$'
      if [ -d "$1/overlays/$2" ]; then
-          rsync --info=COPY -IhncO -aCP "$1/overlays/$2/" "$HOME" 2>/dev/null | egrep -v 'sending incremental file list|^.*/$'
+          rsync --info=COPY -IhncO -aCP "$1/overlays/$2/" "$HOME" 2>/dev/null | grep -E -v 'sending incremental file list|^.*/$'
      fi
      yn=n
-     read -p "Continue? (y/n) [n]: " -n1 yn; echo
+     read -r -p "Continue? (y/n) [n]: " -n1 yn; echo
      if [ "$yn" != "y" ]; then
           echo "Skipping"
           exit 0

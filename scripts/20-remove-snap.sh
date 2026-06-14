@@ -1,10 +1,11 @@
-BASEDIR="$1"
-OSENV="$2"
+#!/bin/bash
+# BASEDIR="$1"
+# OSENV="$2"
 FLAVOR="$3"
 
 if [ "$FLAVOR" = "ubuntu" ]; then
     command -v snap &> /dev/null || exit 0
-    snap list | egrep -v '(Notes|base|snapd)$' | awk '{print $1}' | xargs -n1 sudo snap remove --purge 
+    snap list | grep -E -v '(Notes|base|snapd)$' | awk '{print $1}' | xargs -n1 sudo snap remove --purge
     sudo snap remove --purge bare
     sudo snap remove --purge core20
     sudo snap remove --purge snapd

@@ -1,4 +1,5 @@
-BASEDIR="${1:-}"
+#!/bin/bash
+# BASEDIR="${1:-}"
 OSENV="${2:-}"
 
 if ! command -v git >/dev/null 2>&1; then
@@ -9,6 +10,7 @@ fi
 # Fall back to ~/.env-local if the GIT_* vars aren't already exported
 # (covers the first-run case before the parent shell has them).
 if [ -z "${GIT_USER_NAME:-}" ] && [ -r "$HOME/.env-local" ]; then
+    # shellcheck source=/dev/null
     . "$HOME/.env-local"
 fi
 
@@ -40,7 +42,9 @@ git config --global --get alias.pick || git config --global alias.pick "cherry-p
 git config --global --get alias.orphans || git config --global alias.orphans "!git fetch -p; git remote prune origin; git checkout -d; git branch -vv --color=never | sed -nre \"s/^([[:space:]]+)([^[:space:]]+)[[:space:]].*\\[origin[^:]+: gone\\].*/\\2/p\" || echo none >&2"
 git config --global --get alias.mod || git config --global alias.mod '!go mod'
 git config --global --get alias.graph || git config --global alias.graph "log --oneline --graph"
+# shellcheck disable=SC2016
 git config --global --get alias.fpush || git config --global alias.fpush '!f() { args="$@"; args=$(echo "$args" | sed "s/\b-f\b/--force-with-lease/g"); args=$(echo "$args" | sed "s/\b--force\b/--force-with-lease/g"); args=$(echo "$args" | sed "s/-f\([a-zA-Z]\)/-\1 --force-with-lease/g"); git push $args; }; f'
 git config --global --get alias.ff || git config --global alias.ff "pull --no-commit --ff-only origin"
+# shellcheck disable=SC2016
 git config --global --get alias.alias || git config --global alias.alias '!git config --global -l | '"awk -F'.' '/^alias\./&&"'!'"/^alias.alias/ {print "'"alias",$2}'"'"
 exec 1>&9 9>&-

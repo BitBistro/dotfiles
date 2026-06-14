@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -f ~/.bash_aliases ]; then
     XSUM="$(md5sum ~/.bash_aliases | awk '{print $1}')"
     if [ "$XSUM" == "b86a5a0848f0c1d0e93f68769d5f9140" ]; then

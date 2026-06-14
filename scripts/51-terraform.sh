@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-BASEDIR="$1"
+# BASEDIR="$1"
 OSENV="$2"
 
 if [ "$OSENV" = "linux" ]; then

@@ -1,3 +1,9 @@
 #!/bin/sh
-mkdir -m 700 -p ~/.ssh ~/.gnupg ~/.cache/nvim/tmp ~/... ~/C/go/src ~/.password-store ~/C/dev
+install -d -m 700 ~/.ssh
+install -d -m 700 ~/.gnupg
+install -d -m 700 ~/.cache/nvim/tmp
+install -d -m 700 ~/...
+install -d -m 700 ~/C/go/src
+install -d -m 700 ~/.password-store
+install -d -m 700 ~/C/dev
 touch ~/.env-local
