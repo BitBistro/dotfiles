@@ -1,0 +1,31 @@
+#!/bin/bash
+# Tool to manage and verify the keyring unlock secret.
+set -euo pipefail
+
+KEY_PATH="foo/bar"
+STORE_PATH="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+KEY_FILE="$STORE_PATH/$KEY_PATH.gpg"
+
+# 1. Ensure pass is installed
+if ! command -v pass >/dev/null 2>&1; then
+    echo "Error: 'pass' is not installed." >&2
+    exit 1
+fi
+
+# 2. If foo/bar does not exist, create it with the value 'unlock-keyring'
+if [ ! -f "$KEY_FILE" ]; then
+    echo "Creating keyring unlock secret at $KEY_PATH..." >&2
+    if ! echo "unlock-keyring" | pass insert -e -f "$KEY_PATH" >/dev/null; then
+        echo "Error: Failed to initialize secret in pass." >&2
+        exit 1
+    fi
+fi
+
+# 3. Retrieve and verify the secret
+unlocked="$(pass show "$KEY_PATH" 2>/dev/null || true)"
+if [ "$unlocked" = "unlock-keyring" ]; then
+    exit 0
+else
+    echo "Wrong password retrieved" >&2
+    exit 1
+fi
