@@ -1,3 +1,4 @@
+# shellcheck shell=sh
 # ~/.profile: executed by the command interpreter for login shells.
 # This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
 # exists.
@@ -19,10 +20,12 @@ fi
 # If running bash then run the bash rc which will exit fast if not interactive
 if [ "$BASH_VERSION" ] && [ "$BASH" != "/bin/sh" ]; then
     if [ -f "$HOME/.bashrc" ]; then
+        # shellcheck source=/dev/null
         . "$HOME/.bashrc" || true
     fi
 else
     if [ -r "$ENV" ]; then
+        # shellcheck source=/dev/null
         . "$ENV" || true
     fi
 fi

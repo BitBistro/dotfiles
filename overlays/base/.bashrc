@@ -1,10 +1,14 @@
+# shellcheck shell=bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
 # Make sure .env is loaded for interactive non-login shells (login shells get
 # it via .profile; non-interactive bash gets it via $BASH_ENV automatically).
-if [ -n "$BASH_ENV" ] && [ -r "$BASH_ENV" ]; then . "$BASH_ENV" || true ; fi
+if [ -n "$BASH_ENV" ] && [ -r "$BASH_ENV" ]; then
+    # shellcheck source=/dev/null
+    . "$BASH_ENV" || true
+fi
 
 # If not running interactively, don't do anything
 case $- in
@@ -25,14 +29,14 @@ if [ -e /usr/bin/less ]; then
     MANPAGER=less
 fi
 LESS="FRiX"
-EDITOR=vi
+EDITOR="vi"
 if command -v vim &> /dev/null; then
-    EDITOR=vim
+    EDITOR="vim"
     alias vi='vim'
     alias view='vim -R'
 fi
 if command -v nvim &> /dev/null; then
-    EDITOR=nvim
+    EDITOR="nvim"
     alias vim="nvim"
     alias view="nvim -R"
 fi
@@ -53,9 +57,8 @@ addCDPATH () {
 
 goto() {
     if [ -n "$1" ]; then
-        _path="$(cd "$1" &>/dev/null && readlink -f .)"
-        if [ $? == 0 ] && [ -n "$_path" ]; then
-            cd "$_path"
+        if _path="$(cd "$1" &>/dev/null && readlink -f .)" && [ -n "$_path" ]; then
+            cd "$_path" || return 1
         else
             return 1
         fi
@@ -66,10 +69,11 @@ goto() {
 
 # For device specific settings
 if [ -r "${HOME}/.env-local" ]; then
+    # shellcheck source=/dev/null
     . "${HOME}/.env-local" || true
 fi
 
-if [ "`id -u`" -eq 0 ]; then
+if [ "$(id -u)" -eq 0 ]; then
     PS1='# '
     mesg n || true
 else
@@ -126,18 +130,24 @@ fi
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
+    # shellcheck source=/dev/null
     . /usr/share/bash-completion/bash_completion || true
   elif [ -f /etc/bash_completion ]; then
+    # shellcheck source=/dev/null
     . /etc/bash_completion || true
   fi
   if type brew &>/dev/null; then
     HAS_BREW="true"
     HOMEBREW_PREFIX="$(brew --prefix)"
     if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
+      # shellcheck source=/dev/null
       source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" || true
     else
       for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*; do
-        [[ -r "$COMPLETION" ]] && source "$COMPLETION" || true
+        if [[ -r "$COMPLETION" ]]; then
+          # shellcheck source=/dev/null
+          source "$COMPLETION" || true
+        fi
       done
     fi
   fi
@@ -167,9 +177,8 @@ fi
 # Do not run command not found and skip the fancy git prompt when running as root
 
 SKIP_GIT_PROMPT=
-if [ "`id -u`" -eq 0 ]; then
+if [ "$(id -u)" -eq 0 ]; then
     SKIP_GIT_PROMPT=true
-    SKIP_SSH_AGENT=true
     unset command_not_found_handle
 fi
 
@@ -177,7 +186,7 @@ fi
 
 if [ "$color_prompt" = yes ]; then
     # Adds the git branch to your prompt
-    if [ -z "$SKIP_GIT_PROMPT" -a -x "/usr/bin/git" ]; then
+    if [ -z "$SKIP_GIT_PROMPT" ] && [ -x "/usr/bin/git" ]; then
         git_branch_color="0m"
         git_branch=""
         git_dirty=""
@@ -192,7 +201,8 @@ if [ "$color_prompt" = yes ]; then
                 if [[ "$branch" == "master" || "$branch" == "HEAD"  || "$branch" == "main" ]]; then
                     git_branch_color="33m"
                 fi
-                local status=$(command git status --porcelain 2> /dev/null)
+                local status
+                status=$(command git status --porcelain 2> /dev/null)
                 if [[ "$status" != "" ]]; then
                     git_dirty="*"
                 fi
@@ -215,12 +225,13 @@ if [ "$color_prompt" = yes ]; then
 else
     # set a fancy prompt (non-color, overwrite the one in /etc/profile)
     # but only if not SUDOing and have SUDO_PS1 set; then assume smart user.
-    if ! [ -n "${SUDO_USER}" -a -n "${SUDO_PS1}" ]; then
+    if ! { [ -n "${SUDO_USER}" ] && [ -n "${SUDO_PS1}" ]; }; then
         PS1='${prompt_context:+"$prompt_context "}\u@\h:\w\$ '
     fi
 fi
 
 # If this is an xterm set the title to user@host:dir
+# shellcheck disable=SC2089
 case "$TERM" in
     xterm*|rxvt*)
         PS1='\[\e]0;${prompt_context:+"$prompt_context "}\l@\h: \W\a\]'"$PS1"
@@ -230,10 +241,12 @@ case "$TERM" in
 esac
 
 unset color_prompt SKIP_GIT_PROMPT HAS_BREW
+# shellcheck disable=SC2090
 export PS1
 
-if [ -z $SKIP_GPG_AGENT ] && type gpg-agent &>/dev/null; then
-    export GPG_TTY=$(tty)
+if [ -z "$SKIP_GPG_AGENT" ] && type gpg-agent &>/dev/null; then
+    GPG_TTY=$(tty)
+    export GPG_TTY
     export GPG_AGENT_INFO=true
     export GNUPGHOME="${GNUPGHOME:-"$HOME/.gnupg"}"
     export GNUPGCONFIG="${GNUPGHOME}/gpg-agent.conf"
@@ -269,7 +282,7 @@ alias rnd='echo $(dd if=/dev/urandom of=>(strings) bs=1024 count=1 2>/dev/null)'
 
 # enable color support of ls and also add handy aliases
 if command -v dircolors &>/dev/null; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    if test -r ~/.dircolors; then eval "$(dircolors -b ~/.dircolors)"; else eval "$(dircolors -b)"; fi
     alias ls='ls --color=auto'
     alias egrep='egrep --color=auto'
     alias fgrep='fgrep --color=auto'
