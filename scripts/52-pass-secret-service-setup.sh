@@ -27,10 +27,15 @@ if [ ! -x "$INSTALL_PATH" ]; then
     exit 0
 fi
 
-# 1. Initialize pass with the GPG key
+# 1. Initialize pass with the GPG key if not already initialized with it
 if command -v pass >/dev/null 2>&1; then
-    echo "Initializing pass with key: $GIT_SIGNINGKEY"
-    pass init "$GIT_SIGNINGKEY"
+    GPG_ID_FILE="$HOME/.password-store/.gpg-id"
+    if [ -f "$GPG_ID_FILE" ] && grep -Fxqi "$GIT_SIGNINGKEY" "$GPG_ID_FILE"; then
+        echo "pass is already initialized with key: $GIT_SIGNINGKEY"
+    else
+        echo "Initializing pass with key: $GIT_SIGNINGKEY"
+        pass init "$GIT_SIGNINGKEY"
+    fi
 else
     echo "Warning: 'pass' is not installed. Skipping pass init."
 fi
