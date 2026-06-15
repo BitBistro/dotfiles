@@ -45,7 +45,7 @@ the relevant `export` lines and re-run the pipeline).
 
 | Path | Purpose |
 |------|---------|
-| `bin/` | Entry-point scripts you run by hand: the pipeline dispatcher (`run-scripts.sh`) and the Debian package installer (`add-deb-packages.sh`). |
+| `bin/` | Entry-point scripts you run by hand: the pipeline dispatcher (`run-scripts.sh`) and the Debian package manager (`manage-deb-packages.sh`). |
 | `scripts/` | Numbered stages run by `bin/run-scripts.sh` in lexical order (see below). |
 | `overlays/` | Dotfiles rsynced into `$HOME` by `50-copyfiles.sh`. `base/` is always applied; OS-specific subdirs (e.g. `darwin/`) are layered on top. |
 | `tools/` | Vendored helper scripts installed to `~/.local/bin` by `scripts/09-install-tools.sh`: `backup`, `browser`, `keys`, `pinentry`. `tools/systemd/` holds the unit and D-Bus activation templates for `pass-secret-service`. |
@@ -97,11 +97,11 @@ successful rsync.
 
 ## Package installation
 
-Primary target is Debian (bare metal and under WSL). `bin/add-deb-packages.sh`
+Primary target is Debian (bare metal and under WSL). `bin/manage-deb-packages.sh`
 is actively maintained and takes a level argument (`base`, `standard`,
 `extra`, `audit`, `cleanup`, `zfs`, `kvm`):
 
 ```sh
-bin/add-deb-packages.sh extra
+bin/manage-deb-packages.sh extra
 ```
 This script is not called by the main pipeline; invoke it manually.
