@@ -99,11 +99,9 @@ successful rsync.
 
 Primary target is Debian (bare metal and under WSL). `bin/add-deb-packages.sh`
 is actively maintained and takes a level argument (`base`, `standard`,
-`extra`, `desktop`, `cleanup`, `zfs`, `kvm`):
+`extra`, `audit`, `cleanup`, `zfs`, `kvm`):
 
 ```sh
 bin/add-deb-packages.sh extra
 ```
-
 This script is not called by the main pipeline; invoke it manually.
-
