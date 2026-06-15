@@ -66,7 +66,7 @@ case "$LEVEL" in
             flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all
             exfatprogs exfat-fuse fbset xdg-utils x11-utils x11-xserver-utils git-filter-repo
-            libsecret-tools shellcheck openssh-server terraform helm
+            libsecret-tools shellcheck openssh-server terraform helm logsave
         )
         manual_pkgs="$(aptitude search -F '%p' '?and(?installed, ?not(?automatic), ?not(~slibs), ?not(~v))' | sort -u)"
         priority_pkgs="$(aptitude search -F '%p' '?and(?installed, ?or(~prequired,~pimportant,~pstandard))' | sort -u)"
