@@ -36,6 +36,11 @@ if command -v pass >/dev/null 2>&1; then
         echo "Initializing pass with key: $GIT_SIGNINGKEY"
         pass init "$GIT_SIGNINGKEY"
     fi
+
+    if [ ! -e "$HOME/.password-store/.git" ]; then
+        echo "Initializing pass git repository..."
+        pass git init
+    fi
 else
     echo "Warning: 'pass' is not installed. Skipping pass init."
 fi
