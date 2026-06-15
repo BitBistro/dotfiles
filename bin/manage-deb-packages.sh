@@ -32,11 +32,11 @@ case "$LEVEL" in
                 bsd-mailx exim4-daemon-light patch zip unzip jq \
                 plocate '?and(~n^plymouth_,?not(~v))' neovim restic curl openssl bsdutils ncal rfkill \
                 wpasupplicant w3m parted bc dc kmod btrfs-progs tcpdump wget wodim busybox-static pinentry-fltk pass \
-                dbus dbus-user-session ripgrep tree yq gpg dos2unix
+                dbus dbus-user-session ripgrep tree yq gpg dos2unix whois
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
                 bsd-mailx exim4-daemon-light patch zip unzip jq \
                 plocate neovim restic curl openssl bsdutils ncal rfkill wpasupplicant w3m parted bc dc kmod btrfs-progs \
-                tcpdump wget wodim busybox-static pinentry-fltk pass dbus dbus-user-session ripgrep tree yq gpg dos2unix
+                tcpdump wget wodim busybox-static pinentry-fltk pass dbus dbus-user-session ripgrep tree yq gpg dos2unix whois
     ;;
     "extra")
         aptitude install \
@@ -48,14 +48,14 @@ case "$LEVEL" in
             linux-doc info iw bison flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
             fbset '?and(~n^mesa,?not(~v))' xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
-            shellcheck task-ssh-server gh pkgconf fd-find sqlite3 x11-apps xterm
+            shellcheck task-ssh-server gh pkgconf fd-find sqlite3 x11-apps xterm bubblewrap
     ;;
     "audit")
         EXPLICIT_LIST=(
             aptitude aptitude-doc-en bash-completion vim-nox git rsync pinentry-tty gpg-agent sudo tasksel
             bsd-mailx exim4-daemon-light patch zip unzip jq plocate neovim restic curl openssl
             bsdutils ncal rfkill wpasupplicant w3m parted bc dc kmod btrfs-progs tcpdump wget
-            wodim busybox-static pinentry-fltk pass dbus dbus-user-session ripgrep tree yq gpg dos2unix
+            wodim busybox-static pinentry-fltk pass dbus dbus-user-session ripgrep tree yq gpg dos2unix whois
             apt-file arch-test autoconf automake autotools-dev build-essential debhelper
             debian-keyring debootstrap devscripts dh-make dkms dosfstools dpkg-dev dput
             dupload e2fsprogs-l10n eatmydata equivs fakeroot fancontrol gdisk gnupg hdparm
@@ -66,7 +66,7 @@ case "$LEVEL" in
             flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all
             exfatprogs exfat-fuse fbset '?and(~n^mesa,?not(~v))' xdg-utils x11-utils x11-xserver-utils git-filter-repo
-            libsecret-tools shellcheck task-ssh-server terraform helm gh pkgconf fd-find sqlite3 x11-apps xterm
+            libsecret-tools shellcheck task-ssh-server terraform helm gh pkgconf fd-find sqlite3 x11-apps xterm bubblewrap
         )
         manual_pkgs="$(aptitude search -F '%p' '?and(?installed, ?not(?automatic), ?not(~slibs), ?not(~v))' | sort -u)"
         priority_pkgs="$(aptitude search -F '%p' '?and(?installed, ?or(~prequired,~pimportant,~pstandard))' | sort -u)"
