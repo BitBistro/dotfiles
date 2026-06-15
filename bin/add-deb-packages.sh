@@ -48,7 +48,7 @@ case "$LEVEL" in
             linux-doc info iw bison flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
             fbset ~n^mesa xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
-            shellcheck openssh-server gh
+            shellcheck openssh-server gh pkgconf
     ;;
     "audit")
         EXPLICIT_LIST=(
@@ -66,7 +66,7 @@ case "$LEVEL" in
             flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all
             exfatprogs exfat-fuse fbset xdg-utils x11-utils x11-xserver-utils git-filter-repo
-            libsecret-tools shellcheck openssh-server terraform helm gh
+            libsecret-tools shellcheck openssh-server terraform helm gh pkgconf
         )
         manual_pkgs="$(aptitude search -F '%p' '?and(?installed, ?not(?automatic), ?not(~slibs), ?not(~v))' | sort -u)"
         priority_pkgs="$(aptitude search -F '%p' '?and(?installed, ?or(~prequired,~pimportant,~pstandard))' | sort -u)"
