@@ -14,7 +14,7 @@ bash scripts/09-install-tools.sh "$PWD" linux ubuntu
 
 ## Pipeline exit-code contract
 
-`bin/run-scripts.sh` treats **exit 255 as fatal** (pipeline halts) and ignores all other non-zero exits. Use 255 only when continuing would corrupt later stages (missing required dep, etc.); otherwise let the script fail soft so the rest of the pipeline still runs.
+`bin/run-scripts.sh` treats **any non-zero exit code as fatal** (pipeline halts). Ensure scripts exit non-zero only when they have failed and cannot safely proceed.
 
 ## Non-obvious behavior
 

@@ -36,10 +36,11 @@ run-now() {
     SCRIPTS=$(command find $REPRE "${BASEDIR}/scripts" "${REGEXTYPE[@]}" -maxdepth 1 -regex '^.*\/[0-9][0-9][a-zA-Z-]+\.sh$' -type f -print | command sort)
     for SCRIPT in $SCRIPTS; do
         echo "Running: $SCRIPT"
-        /bin/bash "${SCRIPT}" "${BASEDIR}" "${OSENV}" "${FLAVOR}"
-        if [ $? -eq 255 ]; then
-            echo "Error 255 encountered in script '$SCRIPT'"
-            exit 255
+        "${SCRIPT}" "${BASEDIR}" "${OSENV}" "${FLAVOR}"
+        RC=$?
+        if [ $RC -ne 0 ]; then
+            echo "Error: script '$SCRIPT' failed with exit code $RC"
+            exit "$RC"
         fi
     done
 }

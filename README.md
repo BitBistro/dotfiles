@@ -55,8 +55,8 @@ the relevant `export` lines and re-run the pipeline).
 
 `bin/run-scripts.sh` detects the OS and runs every `scripts/NN-name.sh` in
 lexical order, passing `BASEDIR`, `OSENV` (`linux`|`darwin`), and `FLAVOR`
-(distro, e.g. `ubuntu`) to each script. A script returning exit code 255
-halts the pipeline.
+(distro, e.g. `ubuntu`) to each script. A script returning a non-zero exit
+code halts the pipeline.
 
 ### Script stages
 
