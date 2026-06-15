@@ -1,8 +1,6 @@
 #!/bin/bash
-command find -P ~/.ssh ~/.gnupg ~/.password-store -type d -exec /bin/chmod -v 700 {} \;
-command find -P ~/.config ~/.cache -type d -exec /bin/chmod 700 {} \; 
-command find -P ~/.ssh ~/.gnupg ~/.password-store -type f -exec /bin/chmod -v 600 {} \; -print
-command find -P ~/.local -maxdepth 2 -type d -exec /bin/chmod 711 {} \;
-chmod 711 ~/C
-chmod 711 ~/C/dev
-chmod 711 ~/C/go
+command find -P ~/.ssh ~/.gnupg ~/.password-store -type d ! -perm 700 -exec chmod -v 700 {} \;
+command find -P ~/.config ~/.cache -type d ! -perm 700 -exec chmod 700 {} \;
+command find -P ~/.ssh ~/.gnupg ~/.password-store -type f ! -perm 600 -exec chmod -v 600 {} \;
+command find -P ~/.local -maxdepth 2 -type d ! -perm 711 -exec chmod 711 {} \;
+command find ~/C ~/C/dev ~/C/go -maxdepth 0 -type d ! -perm 711 -exec chmod -v 711 {} \;
