@@ -27,12 +27,12 @@ case "$LEVEL" in
     ;;
     "standard")
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
-                bsd-mailx exim4-daemon-light bash-completion vim-nox rsync pinentry-tty gpg-agent patch zip unzip jq \
-                plocate pinentry-curses_ '?and(~n^plymouth_,?not(~v))' neovim restic curl openssl bsdutils ncal rfkill \
+                bsd-mailx exim4-daemon-light patch zip unzip jq \
+                plocate '?and(~n^plymouth_,?not(~v))' neovim restic curl openssl bsdutils ncal rfkill \
                 wpasupplicant w3m parted bc dc kmod btrfs-progs tcpdump wget wodim busybox-static pinentry-fltk pass \
                 dbus-user-session ripgrep tree yq
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
-                bsd-mailx exim4-daemon-light bash-completion vim-nox rsync pinentry-tty gpg-agent patch zip unzip jq \
+                bsd-mailx exim4-daemon-light patch zip unzip jq \
                 plocate neovim restic curl openssl bsdutils ncal rfkill wpasupplicant w3m parted bc dc kmod btrfs-progs \
                 tcpdump wget wodim busybox-static pinentry-fltk pass dbus-user-session ripgrep tree yq
     ;;
@@ -40,12 +40,12 @@ case "$LEVEL" in
         aptitude install \
             apt-file arch-test autoconf automake autotools-dev build-essential debhelper debian-keyring debootstrap \
             devscripts dh-make dkms dosfstools dpkg-dev dput dupload e2fsprogs-l10n eatmydata equivs fakeroot fancontrol \
-            gdisk gnupg hdparm htop i2c-tools irqbalance jq lintian shared-mime-info xauth linux-headers-amd64 \
-            lm-sensors localepurge manpages-dev plocate mutt net-tools nocache nvme-cli parted patch patchutils pbuilder pigz \
-            powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs neovim gdb \
-            linux-doc info iw bison flex gnupg libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
+            gdisk gnupg hdparm htop i2c-tools irqbalance lintian shared-mime-info xauth linux-headers-amd64 \
+            lm-sensors localepurge manpages-dev mutt net-tools nocache nvme-cli patchutils pbuilder pigz \
+            powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs gdb \
+            linux-doc info iw bison flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
-            fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
+            fbset ~n^mesa xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
             shellcheck
     ;;
     "cleanup")
