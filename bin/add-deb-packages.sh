@@ -29,11 +29,12 @@ case "$LEVEL" in
         aptitude -r install '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs))' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox rsync pinentry-tty gpg-agent patch zip unzip jq \
                 plocate pinentry-curses_ '?and(~n^plymouth_,?not(~v))' neovim restic curl openssl bsdutils ncal rfkill \
-                wpasupplicant w3m parted bc dc kmod btrfs-progs tcpdump wget wodim busybox-static pinentry-fltk pass dbus-user-session
+                wpasupplicant w3m parted bc dc kmod btrfs-progs tcpdump wget wodim busybox-static pinentry-fltk pass \
+                dbus-user-session ripgrep tree yq
         aptitude unmarkauto '?and(?architecture(native),?or(~prequired,~pimportant,~pstandard),?not(~v),?not(~slibs),~i)' \
                 bsd-mailx exim4-daemon-light bash-completion vim-nox rsync pinentry-tty gpg-agent patch zip unzip jq \
                 plocate neovim restic curl openssl bsdutils ncal rfkill wpasupplicant w3m parted bc dc kmod btrfs-progs \
-                tcpdump wget wodim busybox-static pinentry-fltk pass dbus-user-session
+                tcpdump wget wodim busybox-static pinentry-fltk pass dbus-user-session ripgrep tree yq
     ;;
     "extra")
         aptitude install \
@@ -44,7 +45,7 @@ case "$LEVEL" in
             powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs neovim gdb \
             linux-doc info iw bison flex gnupg libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
-            fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils ripgrep git-filter-repo libsecret-tools \
+            fbset ~n^mesa va-driver-all xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
             shellcheck
     ;;
     "cleanup")
