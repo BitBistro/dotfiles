@@ -47,7 +47,7 @@ case "$LEVEL" in
             powermgmt-base read-edid screen smartmontools strace thin-provisioning-tools xutils-dev xdg-user-dirs gdb \
             linux-doc info iw bison flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
-            fbset ~n^mesa xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
+            fbset '?and(~n^mesa,?not(~v))' xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
             shellcheck openssh-server gh pkgconf
     ;;
     "audit")
