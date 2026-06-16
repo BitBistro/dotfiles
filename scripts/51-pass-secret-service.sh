@@ -50,8 +50,8 @@ fi
 
 # Check if current install matches latest version
 if [ -x "$INSTALL_PATH" ]; then
-    _CURRENT_VER_OUT="$("$INSTALL_PATH" --version 2>/dev/null || "$INSTALL_PATH" -V 2>/dev/null || true)"
-    _CURRENT_VER="$(echo "$_CURRENT_VER_OUT" | awk '{print $NF}' | sed 's/^v//')"
+    _CURRENT_VER_OUT="$("$INSTALL_PATH" -V 2>&1 || "$INSTALL_PATH" --version 2>&1 || true)"
+    _CURRENT_VER="$(echo "$_CURRENT_VER_OUT" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+[^[:space:]]*' | head -n1 | sed 's/^v//')"
     if [ "$_CURRENT_VER" = "$_LATEST_VER" ]; then
         echo "Already have the latest pass-secret-service ($_LATEST_VER)"
         exit 0
