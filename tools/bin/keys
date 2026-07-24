@@ -30,14 +30,20 @@ fi
 KEY_PATH="foo/bar"
 STORE_PATH="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 KEY_FILE="$STORE_PATH/$KEY_PATH.gpg"
+KEYGRIP_FILE="$STORE_PATH/.keygrip"
 
-# 1. Ensure pass is installed
-if ! command -v pass >/dev/null 2>&1; then
-    echo "Error: 'pass' is not installed." >&2
-    exit 1
+# 1. Fast-path: Check if key is already unlocked in gpg-agent memory
+if [ -f "$KEYGRIP_FILE" ]; then
+    _KEYGRIP="$(cat "$KEYGRIP_FILE")"
+    if [ -n "$_KEYGRIP" ]; then
+        _INFO="$(gpg-connect-agent "keyinfo $_KEYGRIP" /bye 2>/dev/null || true)"
+        if [[ "$_INFO" == *" P "* ]]; then
+            exit 0
+        fi
+    fi
 fi
 
-# 2. If foo/bar does not exist, create it with the value 'unlock-keyring'
+# 2. If foo/bar does not exist, create it with the value 'unlock-keyring' using pass
 if [ ! -f "$KEY_FILE" ]; then
     echo "Creating keyring unlock secret at $KEY_PATH..." >&2
     if ! echo "unlock-keyring" | pass insert -e -f "$KEY_PATH" >/dev/null; then
@@ -46,9 +52,16 @@ if [ ! -f "$KEY_FILE" ]; then
     fi
 fi
 
-# 3. Retrieve and verify the secret
-unlocked="$(pass show "$KEY_PATH" 2>/dev/null || true)"
+# 4. Direct GPG decryption fallback (much faster than 'pass show')
+unlocked="$(gpg --decrypt --quiet "$KEY_FILE" 2>/dev/null || true)"
 if [ "$unlocked" = "unlock-keyring" ]; then
+    # Cache keygrip for fast-path on subsequent runs
+    if [ ! -f "$KEYGRIP_FILE" ]; then
+        _KEYID="$(gpg --list-packets "$KEY_FILE" 2>/dev/null | awk '/keyid/ {print $NF; exit}')"
+        if [ -n "$_KEYID" ]; then
+            gpg --with-keygrip -k "$_KEYID" 2>/dev/null | awk '/Keygrip/ {print $NF; exit}' > "$KEYGRIP_FILE" || true
+        fi
+    fi
     exit 0
 else
     echo "Wrong password retrieved" >&2
