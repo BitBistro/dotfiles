@@ -39,3 +39,7 @@ Two gotchas learned the hard way:
 - Pipeline args (`BASEDIR`, `OSENV`, `FLAVOR`) that are not used by a script should be commented out rather than left as live assignments to avoid SC2034.
 - All scripts must pass `shellcheck` with zero warnings before committing.
 
+## Git commit conventions
+
+- **Conventional Commits**: All commit messages must strictly follow the Conventional Commits specification (e.g., `feat(scope): description`, `fix(scope): description`, `chore(scope): description`).
+
