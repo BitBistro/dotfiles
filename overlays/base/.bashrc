@@ -293,3 +293,7 @@ fi
 # Hardened local vault environments
 alias frog='~/.config/frogmouth-env/.venv/bin/frogmouth'
 alias mcp-proxy='~/.config/mcp-proxy-env/.venv/bin/mcp-proxy'
+
+# Keyring unlock integration
+alias git='keys -n && command git'
+
