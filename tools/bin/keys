@@ -2,6 +2,31 @@
 # Tool to manage and verify the keyring unlock secret.
 set -euo pipefail
 
+# Parse command-line options
+if [ $# -gt 0 ]; then
+    case "$1" in
+        -n)
+            DISPLAY=
+            export DISPLAY
+            ;;
+        -h|--help)
+            echo "Usage: $(basename "$0") [-n] [-h|--help]"
+            echo
+            echo "Manage and verify the keyring unlock secret."
+            echo
+            echo "Options:"
+            echo "  -n          Clear the DISPLAY variable to force console pinentry prompt"
+            echo "  -h, --help  Show this help message and exit"
+            exit 0
+            ;;
+        *)
+            echo "Error: Unknown option: $1" >&2
+            echo "Usage: $(basename "$0") [-n] [-h|--help]" >&2
+            exit 1
+            ;;
+    esac
+fi
+
 KEY_PATH="foo/bar"
 STORE_PATH="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 KEY_FILE="$STORE_PATH/$KEY_PATH.gpg"
