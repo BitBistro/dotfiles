@@ -65,7 +65,7 @@ code halts the pipeline.
 | `00-09` | Init -- create dirs, seed empty config files, prompt for machine identity (`~/.env-local`), install user-local tools (`backup`, `browser`, `keys`, `pinentry`) |
 | `10-19` | Core config -- git, GPG agent, SSH, pinentry registration |
 | `20-29` | OS tweaks -- remove snap (Ubuntu), fix macOS fonts |
-| `50-59` | Copy dotfiles from `overlays/` to `$HOME`; install language runtimes and tools (Go, Helm, Terraform, uv, 1Password CLI, frogmouth, mcp-proxy, pass-secret-service) |
+| `50-59` | Copy dotfiles from `overlays/` to `$HOME`; install language runtimes and tools (Go, Helm, Terraform, uv, 1Password CLI, gh, glab, frogmouth, mcp-proxy, pass-secret-service) |
 | `99` | Cleanup and permission fixes |
 
 Notable scripts:
