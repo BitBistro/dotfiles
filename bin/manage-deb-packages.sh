@@ -48,7 +48,7 @@ case "$LEVEL" in
             linux-doc info iw bison flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils \
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
             fbset '?and(~n^mesa,?not(~v))' xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
-            shellcheck task-ssh-server gh pkgconf fd-find sqlite3 x11-apps xterm bubblewrap ripgrep-all ffmpeg poppler-utils \
+            shellcheck task-ssh-server pkgconf fd-find sqlite3 x11-apps xterm bubblewrap ripgrep-all ffmpeg poppler-utils \
             kubectl awscli
     ;;
     "audit")
@@ -67,7 +67,7 @@ case "$LEVEL" in
             flex libncurses-dev libelf-dev libssl-dev zstd cpio dwarves xsel upower alsa-utils
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all
             exfatprogs exfat-fuse fbset '?and(~n^mesa,?not(~v))' xdg-utils x11-utils x11-xserver-utils git-filter-repo
-            libsecret-tools shellcheck task-ssh-server terraform helm gh pkgconf fd-find sqlite3 x11-apps xterm bubblewrap ripgrep-all ffmpeg poppler-utils
+            libsecret-tools shellcheck task-ssh-server terraform helm pkgconf fd-find sqlite3 x11-apps xterm bubblewrap ripgrep-all ffmpeg poppler-utils
             kubectl awscli
         )
         manual_pkgs="$(aptitude search -F '%p' '?and(?installed, ?not(?automatic), ?not(~slibs), ?not(~v))' | sort -u)"
