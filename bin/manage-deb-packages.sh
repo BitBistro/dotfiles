@@ -49,7 +49,7 @@ case "$LEVEL" in
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all exfatprogs exfat-fuse \
             fbset '?and(~n^mesa,?not(~v))' xdg-utils x11-utils x11-xserver-utils git-filter-repo libsecret-tools \
             shellcheck task-ssh-server pkgconf fd-find sqlite3 x11-apps xterm bubblewrap ripgrep-all ffmpeg poppler-utils \
-            kubectl awscli
+            kubectl awscli nmap
     ;;
     "audit")
         EXPLICIT_LIST=(
@@ -68,7 +68,7 @@ case "$LEVEL" in
             debconf-utils eject ethtool packagekit cifs-utils vdpau-driver-all va-driver-all
             exfatprogs exfat-fuse fbset '?and(~n^mesa,?not(~v))' xdg-utils x11-utils x11-xserver-utils git-filter-repo
             libsecret-tools shellcheck task-ssh-server terraform helm pkgconf fd-find sqlite3 x11-apps xterm bubblewrap ripgrep-all ffmpeg poppler-utils
-            kubectl awscli
+            kubectl awscli nmap
         )
         manual_pkgs="$(aptitude search -F '%p' '?and(?installed, ?not(?automatic), ?not(~slibs), ?not(~v))' | sort -u)"
         priority_pkgs="$(aptitude search -F '%p' '?and(?installed, ?or(~prequired,~pimportant,~pstandard))' | sort -u)"
