@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install pass-secret-service using prebuilt release binary.
-set -euo pipefail
+set -eu
 # BASEDIR="$1"
 OSENV="$2"
 

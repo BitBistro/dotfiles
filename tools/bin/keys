@@ -1,6 +1,6 @@
 #!/bin/bash
 # Tool to manage and verify the keyring unlock secret.
-set -euo pipefail
+set -eu
 
 # Parse command-line options
 if [ $# -gt 0 ]; then

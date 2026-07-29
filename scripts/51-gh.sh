@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install GitHub CLI (gh) into ~/.local/bin
-set -euo pipefail
+set -eu
 
 # BASEDIR="$1"
 OSENV="${2:-linux}"

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Configure systemd user units and D-Bus activation for pass-secret-service.
-set -euo pipefail
+set -eu
 BASEDIR="$1"
 OSENV="$2"
 

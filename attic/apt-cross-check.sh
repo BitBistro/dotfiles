@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eu
 export LC_ALL=C
 
 # Build an associative set of installed packages in awk, then scan rdepends

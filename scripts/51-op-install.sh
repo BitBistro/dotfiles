@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install 1Password CLI (op) into ~/.local/bin
-set -euo pipefail
+set -eu
 
 # BASEDIR="$1"
 OSENV="${2:-linux}"
