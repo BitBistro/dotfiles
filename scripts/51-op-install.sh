@@ -27,8 +27,8 @@ fi
 
 # Fetch release metadata from 1Password release history page
 release_html="$(curl -fsSL 'https://app-updates.agilebits.com/product_history/CLI2')" || exit 255
-_DL="$(printf '%s\n' "$release_html" | grep -oE "https://[^\"]+op_linux_${_ARCH}[^\"]+\.zip" | grep -v 'beta' | head -n1)"
-_VER_TAG="$(echo "$_DL" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -n1)"
+_DL="$(printf '%s\n' "$release_html" | grep -oE "https://[^\"]+op_linux_${_ARCH}[^\"]+\.zip" | grep -v 'beta' | awk 'NR==1')"
+_VER_TAG="$(echo "$_DL" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | awk 'NR==1')"
 _LATEST_VER="${_VER_TAG#v}"
 
 if [ -z "$_LATEST_VER" ] || [ -z "$_DL" ]; then
@@ -39,7 +39,7 @@ fi
 # Check if current install matches latest version
 if [ -x "$INSTALL_PATH" ]; then
     _CURRENT_VER_OUT="$("$INSTALL_PATH" --version 2>/dev/null || true)"
-    _CURRENT_VER="$(echo "$_CURRENT_VER_OUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1 || true)"
+    _CURRENT_VER="$(echo "$_CURRENT_VER_OUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | awk 'NR==1' || true)"
     if [ "$_CURRENT_VER" = "$_LATEST_VER" ]; then
         echo "Already have the latest 1Password CLI ($_LATEST_VER)"
         exit 0

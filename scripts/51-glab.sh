@@ -42,7 +42,7 @@ fi
 # Check if current install matches latest version
 if [ -x "$INSTALL_PATH" ]; then
     _CURRENT_VER_OUT="$("$INSTALL_PATH" --version 2>/dev/null || true)"
-    _CURRENT_VER="$(echo "$_CURRENT_VER_OUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1 || true)"
+    _CURRENT_VER="$(echo "$_CURRENT_VER_OUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | awk 'NR==1' || true)"
     if [ "$_CURRENT_VER" = "$_LATEST_VER" ]; then
         echo "Already have the latest glab ($_LATEST_VER)"
         exit 0
@@ -61,7 +61,7 @@ curl -fsSL "$_DL" -o "$tar_tmp" || exit 255
 
 tar -xzf "$tar_tmp" -C "$tmpdir" || exit 255
 
-_EXTRACTED_BIN="$(find "$tmpdir" -type f -name glab | head -n1)"
+_EXTRACTED_BIN="$(find "$tmpdir" -type f -name glab | awk 'NR==1')"
 if [ -z "$_EXTRACTED_BIN" ]; then
     echo "Failed to locate glab binary inside archive" >&2
     exit 255

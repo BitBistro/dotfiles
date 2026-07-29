@@ -42,14 +42,14 @@ fi
 # Check if current install matches latest version
 if [ -x "$INSTALL_PATH" ]; then
     _CURRENT_VER_OUT="$("$INSTALL_PATH" --version 2>/dev/null || true)"
-    _CURRENT_VER="$(echo "$_CURRENT_VER_OUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1 || true)"
+    _CURRENT_VER="$(echo "$_CURRENT_VER_OUT" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | awk 'NR==1' || true)"
     if [ "$_CURRENT_VER" = "$_LATEST_VER" ]; then
         echo "Already have the latest gh ($_LATEST_VER)"
         exit 0
     fi
 fi
 
-_DL="$(printf '%s\n' "$release_json" | "${JSON[@]}" ".assets[] | select(.name | endswith(\"linux_${_ARCH}.tar.gz\")) | .browser_download_url" | head -n1)"
+_DL="$(printf '%s\n' "$release_json" | "${JSON[@]}" ".assets[] | select(.name | endswith(\"linux_${_ARCH}.tar.gz\")) | .browser_download_url" | awk 'NR==1')"
 
 if [ -z "$_DL" ]; then
     echo "Could not find gh download URL for linux_${_ARCH}" >&2
@@ -66,7 +66,7 @@ curl -fsSL "$_DL" -o "$tar_tmp" || exit 255
 
 tar -xzf "$tar_tmp" -C "$tmpdir" || exit 255
 
-_EXTRACTED_BIN="$(find "$tmpdir" -type f -name gh | head -n1)"
+_EXTRACTED_BIN="$(find "$tmpdir" -type f -name gh | awk 'NR==1')"
 if [ -z "$_EXTRACTED_BIN" ]; then
     echo "Failed to locate gh binary inside archive" >&2
     exit 255
