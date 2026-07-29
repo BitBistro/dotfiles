@@ -27,7 +27,7 @@ if [ $# -gt 0 ]; then
     esac
 fi
 
-KEY_PATH="foo/bar"
+KEY_PATH="local/keyring"
 STORE_PATH="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 KEY_FILE="$STORE_PATH/$KEY_PATH.gpg"
 KEYGRIP_FILE="$STORE_PATH/.keygrip"
@@ -46,18 +46,18 @@ if [ -f "$KEYGRIP_FILE" ]; then
     fi
 fi
 
-# 2. If foo/bar does not exist, create it with the value 'unlock-keyring' using pass
+# 2. If local/keyring does not exist, create it with the value 'unlocked' using pass
 if [ ! -f "$KEY_FILE" ]; then
     echo "Creating keyring unlock secret at $KEY_PATH..." >&2
-    if ! echo "unlock-keyring" | pass insert -e -f "$KEY_PATH" >/dev/null; then
+    if ! echo "unlocked" | pass insert -e -f "$KEY_PATH" >/dev/null; then
         echo "Error: Failed to initialize secret in pass." >&2
         exit 1
     fi
 fi
 
-# 4. Direct GPG decryption fallback (much faster than 'pass show')
+# 3. Direct GPG decryption fallback (much faster than 'pass show')
 unlocked="$(gpg --decrypt --quiet "$KEY_FILE" 2>/dev/null || true)"
-if [ "$unlocked" = "unlock-keyring" ]; then
+if [ "$unlocked" = "unlocked" ]; then
     # Cache keygrip for fast-path on subsequent runs
     if [ ! -f "$KEYGRIP_FILE" ]; then
         _KEYID="$(gpg --list-packets "$KEY_FILE" 2>/dev/null | awk '/keyid/ {print $NF; exit}')"
