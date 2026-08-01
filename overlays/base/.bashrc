@@ -87,7 +87,8 @@ fi
 
 # and go ...
 export GOPATH="$HOME/C/go"
-test -d "$GOPATH" || mkdir -p "$GOPATH"
+test -d "$GOPATH/bin" || mkdir -p "$GOPATH/bin"
+addPATH "$GOPATH/bin"
 
 export PAGER MANPAGER LESS EDITOR
 export PS1 PATH
