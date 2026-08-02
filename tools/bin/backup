@@ -278,6 +278,7 @@ esac
 /home/*/OneDrive
 /home/*/VirtualDisks
 /home/*/tmp
+/home/*/.kronk
 /home/*/.Trash
 /**/*cache*
 /**/.cache*
