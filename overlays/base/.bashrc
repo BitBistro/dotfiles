@@ -5,9 +5,9 @@
 
 # Make sure .env is loaded for interactive non-login shells (login shells get
 # it via .profile; non-interactive bash gets it via $BASH_ENV automatically).
-if [ -n "$BASH_ENV" ] && [ -r "$BASH_ENV" ]; then
+if [ -r "${BASH_ENV:-"$HOME/.env"}" ]; then
     # shellcheck source=/dev/null
-    . "$BASH_ENV" || true
+    . "${BASH_ENV:-"$HOME/.env"}" || true
 fi
 
 # If not running interactively, don't do anything
