@@ -48,7 +48,7 @@ the relevant `export` lines and re-run the pipeline).
 | `bin/` | Entry-point scripts you run by hand: the pipeline dispatcher (`run-scripts.sh`) and the Debian package manager (`manage-deb-packages.sh`). |
 | `scripts/` | Numbered stages run by `bin/run-scripts.sh` in lexical order (see below). |
 | `overlays/` | Dotfiles rsynced into `$HOME` by `50-copyfiles.sh`. `base/` is always applied; OS-specific subdirs (e.g. `darwin/`) are layered on top. |
-| `tools/` | Vendored helper scripts installed to `~/.local/bin` by `scripts/09-install-tools.sh`: `backup`, `browser`, `keys`, `pinentry`. `tools/systemd/` holds the unit and D-Bus activation templates for `pass-secret-service`. |
+| `tools/` | Vendored helper scripts installed to `~/.local/bin` by `scripts/09-install-tools.sh`: `askpass`, `backup`, `browser`, `keys`, `pinentry`. `tools/systemd/` holds the unit and D-Bus activation templates for `pass-secret-service`. |
 | `attic/` | Archived one-off scripts kept for reference. Not used by the pipeline. |
 
 ## How it works
@@ -62,7 +62,7 @@ code halts the pipeline.
 
 | Range | Purpose |
 |-------|---------|
-| `00-09` | Init -- create dirs, seed empty config files, prompt for machine identity (`~/.env-local`), install user-local tools (`backup`, `browser`, `keys`, `pinentry`) |
+| `00-09` | Init -- create dirs, seed empty config files, prompt for machine identity (`~/.env-local`), install user-local tools (`askpass`, `backup`, `browser`, `keys`, `pinentry`) |
 | `10-19` | Core config -- git, GPG agent, SSH, pinentry registration |
 | `20-29` | OS tweaks -- remove snap (Ubuntu), fix macOS fonts |
 | `50-59` | Copy dotfiles from `overlays/` to `$HOME`; install language runtimes and tools (Go, Helm, Terraform, uv, 1Password CLI, gh, glab, frogmouth, mcp-proxy, pass-secret-service) |
@@ -74,7 +74,7 @@ Notable scripts:
 |--------|-------------|
 | `00-init.sh` | Creates standard dirs with mode 700 (`~/.ssh`, `~/.gnupg`, `~/.password-store`, etc.) |
 | `01-init-env-local.sh` | Interactively prompts for `GIT_*` vars and writes `~/.env-local` |
-| `09-install-tools.sh` | Installs `backup`, `browser`, `keys`, `pinentry` to `~/.local/bin`; on WSL registers a passthrough browser desktop entry |
+| `09-install-tools.sh` | Installs `askpass`, `backup`, `browser`, `keys`, `pinentry` to `~/.local/bin`; on WSL registers a passthrough browser desktop entry |
 | `10-git-config.sh` | Writes global gitconfig non-destructively (guarded by `--get` checks); reads identity from `~/.env-local` |
 | `10-gnupg-config.sh` | Idempotently sets GPG agent config values and enables SSH support |
 | `10-ssh-config.sh` | Appends `ServerAliveInterval`, `VisualHostKey`, and GPG `UPDATESTARTUPTTY` to `~/.ssh/config` if not already present |

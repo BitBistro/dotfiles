@@ -50,9 +50,11 @@ require_file_executable /usr/bin/pinentry-tty   "install pinentry-tty"
 install -m 0755 "$TOOLS_SRC/bin/backup"   "$BIN_DIR/backup"
 install -m 0755 "$TOOLS_SRC/bin/pinentry" "$BIN_DIR/pinentry"
 install -m 0755 "$TOOLS_SRC/bin/keys"     "$BIN_DIR/keys"
+install -m 0755 "$TOOLS_SRC/bin/askpass"  "$BIN_DIR/askpass"
 echo "installed $BIN_DIR/backup"
 echo "installed $BIN_DIR/pinentry"
 echo "installed $BIN_DIR/keys"
+echo "installed $BIN_DIR/askpass"
 
 # --- WSL-only: browser + desktop entry ---
 if ! is_wsl; then

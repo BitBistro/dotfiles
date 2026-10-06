@@ -1,0 +1,28 @@
+#!/bin/bash
+# askpass: SUDO_ASKPASS / SSH_ASKPASS adapter for pinentry.
+#
+# Askpass protocol: invoked with the prompt as $1; print the secret on stdout
+# and exit 0, or exit non-zero if the user cancels.
+# Pinentry protocol: Assuan over stdin/stdout; the secret arrives on a "D " line,
+# percent-encoded for %, CR, and LF.
+set -eu
+
+pinentry="$(dirname "$0")/pinentry"
+[ -x "$pinentry" ] || pinentry="$(command -v pinentry || true)"
+if [ -z "$pinentry" ]; then
+    echo "askpass: pinentry not found" >&2
+    exit 127
+fi
+
+# Assuan commands are line oriented, so flatten any newlines in the prompt.
+prompt="$(printf '%s' "${1:-Password:}" | tr '\r\n' '  ')"
+
+reply="$(printf 'SETPROMPT %s\nGETPIN\nBYE\n' "$prompt" | "$pinentry" || true)"
+line="$(printf '%s\n' "$reply" | sed -n 's/^D //p' | head -n 1)"
+
+# No D line means the dialog was cancelled (ERR ... canceled) or failed.
+[ -n "$line" ] || exit 1
+
+# Decode Assuan %XX escapes. Backslashes are doubled first so printf %b leaves
+# literal backslashes in the secret alone.
+printf '%b\n' "$(printf '%s' "$line" | sed -e 's/\\/\\\\/g' -e 's/%\([0-9A-Fa-f][0-9A-Fa-f]\)/\\x\1/g')"
